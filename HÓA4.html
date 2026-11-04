@@ -1,0 +1,2323 @@
+<!DOCTYPE html>
+<html lang="vi" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz by Phong Nhân - Trắc Nghiệm Hóa Học 12</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        .dark .glass-card {
+            background: rgba(15, 23, 42, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.95); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop {
+            animation: popIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 via-indigo-50/40 to-violet-50/50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col justify-between transition-colors duration-300">
+
+    <!-- Top Header Bar -->
+    <header class="w-full border-b border-slate-200/80 dark:border-slate-800/80 glass-card sticky top-0 z-40 px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-sm">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-600 flex items-center justify-center text-white shadow-md shadow-indigo-500/30 font-black text-lg">
+                PN
+            </div>
+            <div>
+                <h1 class="font-extrabold text-base sm:text-lg tracking-tight bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
+                    Quiz by Phong Nhân
+                </h1>
+                <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Hệ thống trắc nghiệm Hóa học 12 thông minh</p>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-3">
+            <!-- Coin Wallet Display -->
+            <div id="coinWalletBadge" class="hidden px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 font-extrabold text-xs flex items-center space-x-1.5 shadow-sm">
+                <i class="fa-solid fa-coins text-amber-500"></i>
+                <span><strong id="userTotalCoins">0</strong> 🪙</span>
+            </div>
+
+            <button onclick="openLeaderboard()" class="px-3.5 py-2 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 font-bold text-xs flex items-center space-x-2 transition border border-indigo-500/20 cursor-pointer">
+                <i class="fa-solid fa-trophy"></i>
+                <span class="hidden sm:inline">Bảng Xếp Hạng</span>
+            </button>
+            <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-300 transition shadow-sm cursor-pointer" title="Chuyển đổi Sáng/Tối">
+                <i id="themeIcon" class="fa-solid fa-moon text-lg"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="w-full max-w-5xl mx-auto px-4 sm:px-6 py-8 flex-grow">
+
+        <!-- STEP 1: CONFIGURATION & SETUP WITH POWER-UP SHOP -->
+        <div id="setupScreen" class="space-y-6 animate-pop">
+            <div class="bg-white/90 dark:bg-slate-900/90 rounded-3xl shadow-xl border border-slate-200/80 dark:border-slate-800 p-6 sm:p-10">
+                <div class="text-center max-w-xl mx-auto mb-8">
+                    <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider">Hệ Thống Trắc Nghiệm Thông Minh</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold mt-3 text-slate-900 dark:text-white">Bắt Đầu Ôn Tập Chương Trình Hóa 12</h2>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm mt-2">Vui lòng điền thông tin và lựa chọn phần thi phù hợp để bắt đầu chinh phục kiến thức.</p>
+                    
+                    <div class="mt-4 inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-medium">
+                        <i class="fa-solid fa-users text-indigo-500"></i>
+                        <span>Tổng số lượt học viên đã tham gia làm bài: <strong id="totalUsersCount" class="text-indigo-600 dark:text-indigo-400 font-bold">0</strong></span>
+                    </div>
+                </div>
+
+                <form id="quizConfigForm" onsubmit="startQuiz(event)" class="space-y-6 max-w-lg mx-auto">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            <i class="fa-solid fa-user-pen text-indigo-500 mr-1.5"></i> Họ và tên của bạn: <span class="text-rose-500">*</span>
+                        </label>
+                        <input type="text" id="userNameInput" required placeholder="Ví dụ: Nguyễn Văn A" 
+                            class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            <i class="fa-solid fa-book-open text-indigo-500 mr-1.5"></i> Chọn Bài Học / Chương: <span class="text-rose-500">*</span>
+                        </label>
+                        <select id="lessonSelect" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer">
+                            <option value="all">🌟 Ôn Tập Tổng Hợp Tất Cả Các Bài</option>
+                            <option value="bai1">Chương 1 - Bài 1: Ester - Lipid</option>
+                            <option value="bai2">Chương 1 - Bài 2: Xà Phòng Và Chất Giặt Rửa Tổng Hợp</option>
+                            <option value="bai3">Chương 2 - Bài 3: Glucose Và Fructose</option>
+                            <option value="bai4">Chương 2 - Bài 4: Saccharose Và Maltose</option>
+                            <option value="bai5">Chương 2 - Bài 5: Tinh Bột Và Cellulose</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            <i class="fa-solid fa-layer-group text-indigo-500 mr-1.5"></i> Chọn Dạng Bài Thi: <span class="text-rose-500">*</span>
+                        </label>
+                        <select id="sectionSelect" class="w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer">
+                            <option value="all">📝 Tất Cả Dạng Bài (Trắc Nghiệm + Đúng/Sai)</option>
+                            <option value="mcq">📌 Chỉ Phần I - Trắc Nghiệm (4 Đáp Án A, B, C, D)</option>
+                            <option value="tf">⚖️ Chỉ Phần II - Câu Hỏi Trắc Nghiệm Đúng/Sai</option>
+                        </select>
+                    </div>
+
+                    <div class="flex items-center space-x-3 p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/60">
+                        <input type="checkbox" id="shuffleCheckbox" checked class="w-5 h-5 text-indigo-600 rounded focus:ring-indigo-500 border-slate-300 dark:border-slate-700 cursor-pointer">
+                        <label for="shuffleCheckbox" class="text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer select-none">
+                            🔀 Xáo trộn ngẫu nhiên câu hỏi và các đáp án
+                        </label>
+                    </div>
+
+                    <button type="submit" class="w-full py-4 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold text-base shadow-lg shadow-indigo-500/30 transition transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center space-x-2 cursor-pointer">
+                        <span>Bắt Đầu Làm Bài Ngay</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </form>
+            </div>
+
+            <!-- POWER-UP SHOP AT LOBBY -->
+            <div class="bg-white/90 dark:bg-slate-900/90 rounded-3xl shadow-xl border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-store"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-extrabold text-lg text-slate-900 dark:text-white">Cửa Hàng Bảo Bối Hỗ Trợ (Đồng giá 100 🪙)</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Tân thủ được tặng sẵn 300 xu khởi đầu! Mua tối đa 1 cái mỗi loại cho mỗi lần làm bài.</p>
+                        </div>
+                    </div>
+                    <div class="px-3 py-1 bg-amber-500/10 rounded-xl text-amber-600 dark:text-amber-400 font-bold text-xs">
+                        Số dư: <span id="shopCoinsDisplay">0</span> 🪙
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- 1. Ý kiến chuyên gia -->
+                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center space-x-2 font-bold text-slate-900 dark:text-white text-sm">
+                                <i class="fa-solid fa-user-tie text-indigo-500"></i>
+                                <span>Ý kiến Chuyên Gia</span>
+                            </div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Chuyên gia Hóa gợi ý phương pháp giải và hướng dẫn trực tiếp.</p>
+                        </div>
+                        <div class="mt-4 flex items-center justify-between">
+                            <span class="text-xs font-bold text-amber-500">100 🪙</span>
+                            <button type="button" onclick="buyPowerUp('expert')" id="buyBtn_expert" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition cursor-pointer">Mua Ngay</button>
+                        </div>
+                    </div>
+
+                    <!-- 2. Bảo bối thần kỳ -->
+                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center space-x-2 font-bold text-slate-900 dark:text-white text-sm">
+                                <i class="fa-solid fa-wand-magic-sparkles text-amber-500"></i>
+                                <span>Bảo Bối Thần Kỳ</span>
+                            </div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Loại bỏ ngay 2 đáp án nhiễu sai trong câu trắc nghiệm.</p>
+                        </div>
+                        <div class="mt-4 flex items-center justify-between">
+                            <span class="text-xs font-bold text-amber-500">100 🪙</span>
+                            <button type="button" onclick="buyPowerUp('amulet')" id="buyBtn_amulet" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition cursor-pointer">Mua Ngay</button>
+                        </div>
+                    </div>
+
+                    <!-- 3. Gọi Người Thân -->
+                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center space-x-2 font-bold text-slate-900 dark:text-white text-sm">
+                                <i class="fa-solid fa-phone-volume text-emerald-500"></i>
+                                <span>Gọi Người Thân</span>
+                            </div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Tư vấn chính xác từ người thân thông thái.</p>
+                        </div>
+                        <div class="mt-4 flex items-center justify-between">
+                            <span class="text-xs font-bold text-amber-500">100 🪙</span>
+                            <button type="button" onclick="buyPowerUp('friend')" id="buyBtn_friend" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition cursor-pointer">Mua Ngay</button>
+                        </div>
+                    </div>
+
+                    <!-- 4. Chí Tân -->
+                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center space-x-2 font-bold text-slate-900 dark:text-white text-sm">
+                                <i class="fa-solid fa-graduation-cap text-violet-500"></i>
+                                <span>Trợ Giúp Từ Chí Tân</span>
+                            </div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Học sinh xuất sắc Chí Tân chỉ điểm đáp án chuẩn 100%.</p>
+                        </div>
+                        <div class="mt-4 flex items-center justify-between">
+                            <span class="text-xs font-bold text-amber-500">100 🪙</span>
+                            <button type="button" onclick="buyPowerUp('chitan')" id="buyBtn_chitan" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition cursor-pointer">Mua Ngay</button>
+                        </div>
+                    </div>
+
+                    <!-- 5. Gợi ý lý thuyết -->
+                    <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 flex flex-col justify-between sm:col-span-2 lg:col-span-1">
+                        <div>
+                            <div class="flex items-center space-x-2 font-bold text-slate-900 dark:text-white text-sm">
+                                <i class="fa-solid fa-lightbulb text-amber-400"></i>
+                                <span>Gợi Ý Lý Thuyết</span>
+                            </div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Mở khóa gợi ý chi tiết từ đề cương.</p>
+                        </div>
+                        <div class="mt-4 flex items-center justify-between">
+                            <span class="text-xs font-bold text-amber-500">100 🪙</span>
+                            <button type="button" onclick="buyPowerUp('hint')" id="buyBtn_hint" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition cursor-pointer">Mua Ngay</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 2: GAME-PLAY QUIZ INTERFACE -->
+        <div id="quizScreen" class="hidden flex flex-col space-y-6 animate-pop">
+            <!-- Quiz HUD Top Bar -->
+            <div class="bg-white/90 dark:bg-slate-900/90 rounded-2xl p-4 shadow-md border border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center space-x-3">
+                    <div class="px-3 py-1.5 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-bold rounded-xl text-sm">
+                        <span id="questionLessonTagDisplay" class="mr-1 text-slate-500">Bài 1</span> • Câu <span id="currentQuestionNum">1</span>/<span id="totalQuestionsNum">10</span>
+                    </div>
+                    <div id="streakBadge" class="hidden px-3 py-1.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold rounded-xl text-sm flex items-center space-x-1 animate-pulse">
+                        <span>🔥 Streak:</span> <span id="streakCount">0</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-2">
+                    <button type="button" onclick="togglePauseQuiz()" id="pauseBtn" class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium text-xs flex items-center space-x-1.5 transition cursor-pointer">
+                        <i class="fa-solid fa-pause text-indigo-500" id="pauseIcon"></i>
+                        <span id="pauseText">Tạm Dừng</span>
+                    </button>
+                    <div class="flex items-center space-x-2 px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300">
+                        <i class="fa-solid fa-stopwatch text-indigo-500"></i>
+                        <span id="timerDisplay">00:00</span>
+                    </div>
+                    <button type="button" onclick="confirmQuickSubmit()" class="px-3 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold text-xs transition border border-emerald-500/20 cursor-pointer">
+                        Nộp Nhanh
+                    </button>
+                    <button type="button" onclick="confirmExitQuiz()" class="text-xs text-rose-500 hover:text-rose-600 font-medium px-3 py-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 transition cursor-pointer">
+                        Thoát
+                    </button>
+                </div>
+            </div>
+
+            <!-- In-game Power-ups Bar -->
+            <div class="bg-white/90 dark:bg-slate-900/90 rounded-2xl p-3 shadow-sm border border-slate-200/80 dark:border-slate-800 flex items-center justify-between overflow-x-auto gap-2">
+                <span class="text-xs font-bold text-slate-500 px-2 shrink-0">Bảo bối sẵn sàng:</span>
+                <div class="flex items-center space-x-2">
+                    <button type="button" onclick="usePowerUp('expert')" id="inGameBtn_expert" class="px-3 py-1.5 rounded-xl bg-indigo-500/10 text-indigo-400 text-xs font-bold border border-indigo-500/20 transition flex items-center space-x-1 opacity-50 cursor-not-allowed">
+                        <i class="fa-solid fa-user-tie"></i><span>Chuyên gia</span>
+                    </button>
+                    <button type="button" onclick="usePowerUp('amulet')" id="inGameBtn_amulet" class="px-3 py-1.5 rounded-xl bg-amber-500/10 text-amber-400 text-xs font-bold border border-amber-500/20 transition flex items-center space-x-1 opacity-50 cursor-not-allowed">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i><span>Bảo bối</span>
+                    </button>
+                    <button type="button" onclick="usePowerUp('friend')" id="inGameBtn_friend" class="px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-400 text-xs font-bold border border-emerald-500/20 transition flex items-center space-x-1 opacity-50 cursor-not-allowed">
+                        <i class="fa-solid fa-phone-volume"></i><span>Người thân</span>
+                    </button>
+                    <button type="button" onclick="usePowerUp('chitan')" id="inGameBtn_chitan" class="px-3 py-1.5 rounded-xl bg-violet-500/10 text-violet-400 text-xs font-bold border border-violet-500/20 transition flex items-center space-x-1 opacity-50 cursor-not-allowed">
+                        <i class="fa-solid fa-graduation-cap"></i><span>Chí Tân</span>
+                    </button>
+                    <button type="button" onclick="usePowerUp('hint')" id="inGameBtn_hint" class="px-3 py-1.5 rounded-xl bg-rose-500/10 text-rose-400 text-xs font-bold border border-rose-500/20 transition flex items-center space-x-1 opacity-50 cursor-not-allowed">
+                        <i class="fa-solid fa-lightbulb"></i><span>Gợi ý</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Question Card & Grouped Question List Drawer -->
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <!-- Question Main Area -->
+                <div class="lg:col-span-3 bg-white/90 dark:bg-slate-900/90 rounded-3xl shadow-xl border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 flex flex-col relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1.5 bg-slate-100 dark:bg-slate-800">
+                        <div id="quizProgressBar" class="h-full bg-indigo-600 transition-all duration-300" style="width: 10%"></div>
+                    </div>
+
+                    <div class="mb-3 flex items-center justify-between">
+                        <span id="questionSectionTag" class="px-3 py-1 rounded-full bg-violet-500/10 text-violet-600 dark:text-violet-400 text-xs font-bold uppercase tracking-wider">Phần I: Trắc Nghiệm</span>
+                        <span class="text-xs text-slate-400 font-medium">Quiz by Phong Nhân</span>
+                    </div>
+
+                    <h3 id="questionText" class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white leading-relaxed mb-6">
+                        Đang tải câu hỏi...
+                    </h3>
+
+                    <div id="optionsContainer" class="space-y-3">
+                        <!-- Options injected dynamically -->
+                    </div>
+
+                    <div class="flex items-center justify-between mt-8 pt-4 border-t border-slate-100 dark:border-slate-800">
+                        <button type="button" onclick="prevQuestion()" id="prevNavBtn" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-sm font-semibold transition flex items-center space-x-2 cursor-pointer">
+                            <i class="fa-solid fa-arrow-left"></i>
+                            <span>Câu Trước</span>
+                        </button>
+
+                        <div class="text-xs text-slate-400 font-medium hidden sm:block">
+                            💡 Chọn đúng tự động sang câu sau. Chọn sai dừng lại xem đáp án.
+                        </div>
+
+                        <button type="button" onclick="nextQuestionManual()" id="nextNavBtn" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold transition flex items-center space-x-2 shadow-md shadow-indigo-500/20 cursor-pointer">
+                            <span>Câu Tiếp</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <div id="feedbackBox" class="mt-6 hidden p-4 rounded-2xl flex items-start space-x-3 transition-all duration-300">
+                        <div id="feedbackIcon" class="text-2xl mt-0.5"></div>
+                        <div class="flex-grow">
+                            <h4 id="feedbackTitle" class="font-bold text-base"></h4>
+                            <p id="feedbackMessage" class="text-sm mt-0.5"></p>
+                        </div>
+                        <div id="feedbackAction" class="flex items-center">
+                            <button type="button" id="nextBtn" onclick="nextQuestion()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl shadow transition hidden cursor-pointer">
+                                Tiếp Tục <i class="fa-solid fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grouped Question List Drawer -->
+                <div class="bg-white/90 dark:bg-slate-900/90 rounded-3xl shadow-xl border border-slate-200/80 dark:border-slate-800 p-5 flex flex-col h-fit max-h-[600px] overflow-hidden">
+                    <div class="flex items-center justify-between mb-3 pb-2 border-b border-slate-100 dark:border-slate-800">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-map-location-dot text-indigo-500"></i>
+                            <h4 class="font-extrabold text-sm text-slate-900 dark:text-white">Danh Sách Câu Hỏi</h4>
+                        </div>
+                        <span class="text-[10px] bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-bold px-2 py-0.5 rounded-full">Theo Bài</span>
+                    </div>
+                    <p class="text-xs text-slate-400 mb-3">Bấm số câu để chuyển nhanh hoặc kiểm tra trạng thái đúng/sai.</p>
+                    
+                    <div id="questionGroupsDrawer" class="space-y-4 overflow-y-auto pr-1 flex-grow">
+                        <!-- Grouped buttons injected dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAUSE MODAL -->
+        <div id="pauseOverlay" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+            <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 max-w-sm w-full p-6 text-center animate-pop">
+                <div class="w-16 h-16 bg-indigo-500/10 text-indigo-600 rounded-2xl mx-auto flex items-center justify-center text-2xl mb-4">
+                    <i class="fa-solid fa-pause"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white">Bài Thi Đang Tạm Dừng</h3>
+                <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 mb-6">Bạn có thể nghỉ ngơi chốc lát. Thời gian đã được tạm dừng.</p>
+                <button type="button" onclick="togglePauseQuiz()" class="w-full py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold shadow-lg shadow-indigo-500/30 transition cursor-pointer">
+                    Tiếp Tục Làm Bài
+                </button>
+            </div>
+        </div>
+
+        <!-- STEP 3: RESULTS SCREEN -->
+        <div id="resultScreen" class="hidden bg-white/90 dark:bg-slate-900/90 rounded-3xl shadow-xl border border-slate-200/80 dark:border-slate-800 p-6 sm:p-10 text-center max-w-xl mx-auto w-full animate-pop">
+            <div class="w-20 h-20 bg-gradient-to-tr from-amber-400 to-amber-600 rounded-3xl mx-auto flex items-center justify-center text-white text-3xl shadow-lg shadow-amber-500/30 mb-6 animate-bounce">
+                <i class="fa-solid fa-award"></i>
+            </div>
+
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">Hoàn Thành Xuất Sắc!</h2>
+            <p id="resultUserName" class="text-indigo-600 dark:text-indigo-400 font-semibold text-lg mt-1">Xin chúc mừng học viên</p>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 my-8">
+                <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60">
+                    <p class="text-xs text-slate-400 font-medium">Tổng điểm</p>
+                    <p id="resScore" class="text-2xl font-black text-indigo-600 dark:text-indigo-400 mt-1">0đ</p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60">
+                    <p class="text-xs text-slate-400 font-medium">Số câu đúng</p>
+                    <p id="resCorrect" class="text-2xl font-black text-emerald-500 mt-1">0</p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60">
+                    <p class="text-xs text-slate-400 font-medium">Số câu sai</p>
+                    <p id="resIncorrect" class="text-2xl font-black text-rose-500 mt-1">0</p>
+                </div>
+                <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/60">
+                    <p class="text-xs text-slate-400 font-medium">Tiền Thưởng</p>
+                    <p id="resCoins" class="text-xl font-black text-amber-500 mt-1">+0 🪙</p>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3 justify-center flex-wrap">
+                <button type="button" onclick="openReviewModal()" class="px-5 py-3.5 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-bold shadow-lg shadow-violet-500/25 transition flex items-center justify-center space-x-2 cursor-pointer">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span>Xem Lại Bài Làm</span>
+                </button>
+                <button type="button" onclick="returnToHome()" class="px-5 py-3.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold shadow-lg shadow-amber-500/25 transition flex items-center justify-center space-x-2 cursor-pointer">
+                    <i class="fa-solid fa-store"></i>
+                    <span>Về Sảnh Mua Sắm</span>
+                </button>
+                <button type="button" onclick="restartQuiz()" class="px-5 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold shadow-lg shadow-indigo-500/25 transition flex items-center justify-center space-x-2 cursor-pointer">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>Làm Lại</span>
+                </button>
+                <button type="button" onclick="openLeaderboard()" class="px-5 py-3.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 font-bold text-slate-700 dark:text-slate-300 transition flex items-center justify-center space-x-2 cursor-pointer">
+                    <i class="fa-solid fa-trophy text-amber-500"></i>
+                    <span>Xem BXH</span>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- REVIEW MODAL -->
+    <div id="reviewModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 max-w-2xl w-full max-h-[85vh] flex flex-col overflow-hidden animate-pop">
+            <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/50">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-violet-500/10 text-violet-500 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-list-check"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-lg text-slate-900 dark:text-white">Xem Lại Chi Tiết Bài Làm</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Kiểm tra đáp án đúng / sai và giải thích</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeReviewModal()" class="w-9 h-9 rounded-xl bg-slate-200/60 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 transition cursor-pointer">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <div id="reviewContentList" class="p-6 overflow-y-auto flex-grow space-y-4">
+                <!-- Injected review items -->
+            </div>
+
+            <div class="p-4 border-t border-slate-100 dark:border-slate-800 text-center bg-slate-50/50 dark:bg-slate-800/50 flex justify-between items-center">
+                <span class="text-xs text-slate-400">Quiz by Phong Nhân</span>
+                <button type="button" onclick="closeReviewModal()" class="px-5 py-2 bg-indigo-600 text-white font-bold text-sm rounded-xl cursor-pointer">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LEADERBOARD MODAL -->
+    <div id="leaderboardModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 max-w-lg w-full max-h-[85vh] flex flex-col overflow-hidden animate-pop">
+            <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/50">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-lg text-slate-900 dark:text-white">Bảng Xếp Hạng Online</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Xếp theo số câu đúng & thời gian nhanh nhất</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeLeaderboard()" class="w-9 h-9 rounded-xl bg-slate-200/60 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 transition cursor-pointer">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <div id="leaderboardContent" class="p-6 overflow-y-auto flex-grow space-y-3">
+                <!-- Dynamic leader items -->
+            </div>
+
+            <div class="p-4 border-t border-slate-100 dark:border-slate-800 text-center bg-slate-50/50 dark:bg-slate-800/50 flex justify-between items-center">
+                <span class="text-xs text-slate-400">Quiz by Phong Nhân</span>
+                <button type="button" onclick="clearLeaderboardData()" class="text-xs text-rose-500 hover:underline font-medium cursor-pointer">
+                    <i class="fa-solid fa-trash-can mr-1"></i> Xóa dữ liệu BXH
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Copyright -->
+    <footer class="py-6 text-center text-xs text-slate-400 dark:text-slate-500 border-t border-slate-200/80 dark:border-slate-800">
+        <p>© 2026 Quiz by Phong Nhân. Thiết kế hiện đại, mượt mà và trực quan cho học sinh Hóa học 12.</p>
+    </footer>
+
+    <!-- JavaScript Data and Game Engine -->
+    <script>
+        // ==========================================
+        // 0. DARK/LIGHT MODE TOGGLE
+        // ==========================================
+        function toggleDarkMode() {
+            const htmlEl = document.documentElement;
+            const themeIcon = document.getElementById('themeIcon');
+            if (htmlEl.classList.contains('dark')) {
+                htmlEl.classList.remove('dark');
+                localStorage.setItem('quizTheme_phongnhan', 'light');
+                if (themeIcon) {
+                    themeIcon.className = "fa-solid fa-moon text-lg";
+                }
+            } else {
+                htmlEl.classList.add('dark');
+                localStorage.setItem('quizTheme_phongnhan', 'dark');
+                if (themeIcon) {
+                    themeIcon.className = "fa-solid fa-sun text-lg text-amber-400";
+                }
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('quizTheme_phongnhan');
+            const themeIcon = document.getElementById('themeIcon');
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+                if (themeIcon) themeIcon.className = "fa-solid fa-sun text-lg text-amber-400";
+            }
+            if (localStorage.getItem('quizCoins_phongnhan') === null) {
+                localStorage.setItem('quizCoins_phongnhan', '300'); // Newcomer starting bonus 300 coins
+            }
+            updateTotalUsersDisplay();
+            updateWalletDisplay();
+        });
+
+        // ==========================================
+        // 1. WEB AUDIO SOUND EFFECTS GENERATOR
+        // ==========================================
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playSound(type) {
+            try {
+                initAudio();
+                if (!audioCtx) return;
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                const now = audioCtx.currentTime;
+
+                if (type === 'correct') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, now);
+                    osc.frequency.setValueAtTime(659.25, now + 0.08);
+                    osc.frequency.setValueAtTime(783.99, now + 0.16);
+                    osc.frequency.setValueAtTime(1046.50, now + 0.24);
+
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+
+                    osc.start(now);
+                    osc.stop(now + 0.5);
+                } else if (type === 'incorrect') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(180, now);
+                    osc.frequency.setValueAtTime(120, now + 0.15);
+
+                    gain.gain.setValueAtTime(0.25, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+
+                    osc.start(now);
+                    osc.stop(now + 0.4);
+                } else if (type === 'coin') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(987.77, now);
+                    osc.frequency.setValueAtTime(1318.51, now + 0.1);
+
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                }
+            } catch (e) {
+                console.log("Audio play error:", e);
+            }
+        }
+
+        // ==========================================
+        // 2. RAW QUESTION DATABASE
+        // ==========================================
+        const rawDatabase = {
+            bai1: {
+                title: "Chương 1 - Bài 1: Ester - Lipid",
+                shortName: "Bài 1",
+                questions: [
+                    {
+                        section: "mcq",
+                        question: "Câu 1. Có bao nhiêu ester có công thức phân tử C₄H₈O₂?",
+                        options: ["2.", "3.", "4.", "5."],
+                        correct: 2,
+                        explanation: "Các ester C4H8O2 gồm: methyl propionate, ethyl acetate, propyl formate, isopropyl formate (tổng cộng 4 đồng phân)."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 2. Có bao nhiêu hợp chất hữu cơ đơn chức khác nhau có công thức phân tử C₃H₆O₂?",
+                        options: ["2.", "3.", "4.", "5."],
+                        correct: 1,
+                        explanation: "C3H6O2 có các đồng phân đơn chức gồm acid (CH3CH2COOH) và các ester (HCOOC2H5, CH3COOCH3) tổng cộng 3 chất."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 3. Cho 4 chất sau: butan-1-ol (1), butanoic acid (2), ethyl acetate (3) và pentan-2-ol (4). Chất có nhiệt độ sôi thấp nhất trong 4 chất nêu trên là",
+                        options: ["(1).", "(2).", "(3).", "(4)."],
+                        correct: 2,
+                        explanation: "Ethyl acetate (3) có nhiệt độ sôi thấp nhất do không tạo liên kết hydrogen liên phân tử bền vững như alcohol hay carboxylic acid."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 4. Ester no, đơn chức, mạch hở có công thức chung là",
+                        options: ["CₙH₂ₙO₂ (n > 1).", "CₙH₂ₙ₊₂O₂ (n > 2).", "CₙH₂ₙ₋₂O₂ (n > 2).", "CₙH₂ₙO₂ (n > 2)."],
+                        correct: 0,
+                        explanation: "Ester no, đơn chức, mạch hở có công thức tổng quát CₙH₂ₙO₂ (n ≥ 2)."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 5. Tính chất vật lý chung của chất béo là",
+                        options: ["ít tan trong nước và nhẹ hơn nước.", "dễ tan trong nước và nhẹ hơn nước.", "ít tan trong nước và nặng hơn nước.", "dễ tan trong nước và nặng hơn nước."],
+                        correct: 0,
+                        explanation: "Chất béo không tan trong nước, nhẹ hơn nước và nổi lên trên."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 6. Ester X mạch hở có công thức phân tử C₃H₄O₂. Tên gọi của X là",
+                        options: ["vinyl acetate.", "methyl acetate.", "methyl formate.", "vinyl formate."],
+                        correct: 3,
+                        explanation: "Ester C3H4O2 có cấu tạo HCOOCH=CH2 (vinyl formate)."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 7. Ester được tạo thành từ CH₃COOH và C₂H₅OH có công thức cấu tạo là",
+                        options: ["CH₃COOCH₃.", "CH₃COOC₂H₅.", "C₂H₅COOCH₃.", "HCOOC₂H₅."],
+                        correct: 1,
+                        explanation: "Acetic acid kết hợp với ethanol tạo ethyl acetate: CH3COOC2H5."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 8. Ester có công thức phân tử là C₂H₄O₂ được tạo thành từ methyl alcohol và carboxylic acid nào sau đây?",
+                        options: ["Propionic acid.", "Acetic acid.", "Formic acid.", "Oxalic acid."],
+                        correct: 2,
+                        explanation: "Ester C2H4O2 là HCOOCH3 (methyl formate), tạo từ formic acid và methanol."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 9. Ester được dùng làm chất tạo hương trong công nghiệp mỹ phẩm, thực phẩm. Ester thường có mùi đặc trưng là",
+                        options: ["mùi hoa, quả chín.", "mùi tanh của cá.", "mùi tinh dầu sả, chanh.", "mùi cồn."],
+                        correct: 0,
+                        explanation: "Nhiều ester có mùi thơm đặc trưng của hoa, quả chín."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 10. Thuỷ phân ester nào sau đây trong dung dịch NaOH đun nóng thu được sodium formate?",
+                        options: ["CH₃COOCH₃.", "CH₃COOC₂H₅.", "HCOOC₂H₅.", "CH₃COOC₃H₇."],
+                        correct: 2,
+                        explanation: "Ester gốc formate HCOOR khi thủy phân trong NaOH tạo sodium formate (HCOONa)."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 11. Xà phòng hoá hoàn toàn ester có công thức hoá học CH₃COOC₂H₅ trong dung dịch KOH dư đun nóng, thu được sản phẩm gồm",
+                        options: ["CH₃COOH và C₂H₅OH.", "CH₃COOK và C₂H₅OH.", "C₂H₅COOK và CH₃OH.", "HCOOK và C₃H₇OH."],
+                        correct: 1,
+                        explanation: "Thủy phân ethyl acetate trong KOH thu được potassium acetate (CH3COOK) và ethanol (C2H5OH)."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 12. Chất nào sau đây không phải là chất béo?",
+                        options: ["(CH₃COO)₃C₃H₅.", "(C₁₇H₃₃COO)₃C₃H₅.", "(C₁₇H₃₅COO)₃C₃H₅.", "(C₁₅H₃₁COO)₃C₃H₅."],
+                        correct: 0,
+                        explanation: "(CH3COO)3C3H5 là ester của acid ngắn, không phải chất béo (chất béo là triester của glycerol với acid béo mạch dài)."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 13. Trong các dầu dưới đây, dầu nào không chứa ester của acid béo và glycerol?",
+                        options: ["Dầu lạc (đậu phộng).", "Dầu đậu nành.", "Dầu dừa.", "Dầu mỏ."],
+                        correct: 3,
+                        explanation: "Dầu mỏ là hỗn hợp hydrocarbon no, không phải chất béo."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 14. Acid nào sau đây không thuộc loại acid béo?",
+                        options: ["Oleic acid.", "Palmitic acid.", "Stearic acid.", "Acetic acid."],
+                        correct: 3,
+                        explanation: "Acetic acid có 2C, không thuộc acid béo (acid béo có mạch C dài từ 12C trở lên)."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 15. Thuỷ phân hoàn toàn triglyceride X trong dung dịch NaOH, đun nóng, thu được C₁₇H₃₅COONa và C₃H₅(OH)₃. Công thức của X là",
+                        options: ["(C₁₇H₃₅COO)₃C₃H₅.", "(C₁₇H₃₃COO)₃C₃H₅.", "C₁₇H₃₅COOC₃H₅.", "(C₁₅H₃₁COO)₃C₃H₅."],
+                        correct: 0,
+                        explanation: "Muối sodium stearate C17H35COONa ứng với tristearin: (C17H35COO)3C3H5."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 16. Khi để lâu trong không khí, chất béo sẽ",
+                        options: ["bị bay hơi.", "bị nóng chảy.", "có mùi khó chịu.", "có mùi thơm."],
+                        correct: 2,
+                        explanation: "Chất béo bị oxi hóa tạo thành peroxide rồi phân cắt thành aldehyde gây mùi ôi thiu khó chịu."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 17. Công thức cấu tạo của tristearin tạo bởi glycerol và stearic acid là",
+                        options: ["(C₁₇H₃₃COO)₃C₃H₅.", "(C₁₇H₃₅COO)₃C₃H₅.", "(C₁₇H₃₁COO)₃C₃H₅.", "(C₁₅H₃₁COO)₃C₃H₅."],
+                        correct: 1,
+                        explanation: "Tristearin có công thức (C17H35COO)3C3H5."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 18. Từ quả đào chín, người ta tách ra được chất A là một ester có công thức phân tử C₃H₆O₂. Khi thuỷ phân A trong dung dịch NaOH dư, thu được sodium formate và một alcohol. Công thức của A là",
+                        options: ["CH₃COOCH₃.", "CH₃COOC₂H₅.", "HCOOC₂H₅.", "HCOOCH₃."],
+                        correct: 3,
+                        explanation: "Thủy phân tạo sodium formate (HCOONa) thì ester phải là HCOOCH3 (methyl formate)."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 19. Thuỷ phân ester no trong dung dịch NaOH thường tạo thành các sản phẩm nào sau đây?",
+                        options: ["Aldehyde và alcohol.", "Alcohol và sodium carboxylate.", "Alcohol và carboxylic acid.", "Sodium carboxylate."],
+                        correct: 1,
+                        explanation: "Thủy phân ester trong NaOH thu được muối sodium carboxylate và alcohol."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 20. Sáp ong do ong thợ tiết ra và xây dựng tổ ong có thành phần chính là triacontanyl palmitate (C₁₅H₃₁COOC₃₀H₆₁). Ester này thuộc loại",
+                        options: ["không no, đơn chức.", "không no, đa chức.", "no, đơn chức.", "no, đa chức."],
+                        correct: 2,
+                        explanation: "Triacontanyl palmitate là ester no, đơn chức."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 21. Thực hiện phản ứng ester hoá giữa HOOC-COOH với hỗn hợp CH₃OH và C₂H₅OH thu được tối đa bao nhiêu ester hai chức?",
+                        options: ["2.", "3.", "4.", "5."],
+                        correct: 1,
+                        explanation: "Thu được tối đa 3 ester hai chức."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 22. Cho các chất có công thức sau: HCHO, C₂H₂, CH₃COOH, CH₃COOCH₂-CH₃, HCOOCH₃. Trong các chất trên, có bao nhiêu chất thuộc loại ester?",
+                        options: ["2.", "3.", "4.", "5."],
+                        correct: 0,
+                        explanation: "Các ester gồm CH3COOC2H5 và HCOOCH3 (tổng 2 chất)."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 23. Trường hợp nào sau đây xảy ra phản ứng với ethyl acetate?",
+                        options: ["Dung dịch NaOH (t°).", "C₂H₅OH.", "Dung dịch [Ag(NH₃)₂]OH.", "Dung dịch NaCl."],
+                        correct: 0,
+                        explanation: "Ethyl acetate bị thủy phân khi đun nóng với dung dịch NaOH."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 24. Tính chất nào sau đây không phải là tính chất thích hợp giúp ethyl methanoate (HCOOC₂H₅) được sử dụng trong sản xuất một số loại nước hoa?",
+                        options: ["Khả năng dễ cháy.", "Có mùi thơm dễ chịu.", "Không độc hại.", "Nhiệt độ sôi thấp."],
+                        correct: 0,
+                        explanation: "Khả năng dễ cháy không phải là tiêu chí hữu ích dùng trong nước hoa."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 25. Khi xà phòng hoá triglycerid X bằng dung dịch NaOH dư, đun nóng, thu được xà phòng gồm hỗn hợp ba muối sodium oleate, sodium stearate và sodium palmitate. Số đồng phân cấu tạo có thể có của X là",
+                        options: ["2.", "1.", "3.", "4."],
+                        correct: 2,
+                        explanation: "Có 3 đồng phân cấu tạo của triester X."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 26. Khi cho vài giọt dầu ăn vào dung dịch xà phòng, lắc đều. Hiện tượng quan sát được là",
+                        options: ["dầu ăn không tan và nổi lên trên.", "dầu ăn không tan và chìm xuống dưới.", "dầu ăn tan vào dung dịch xà phòng.", "dầu ăn kết tủa lắng xuống dưới đáy."],
+                        correct: 2,
+                        explanation: "Dầu ăn phân tán đều vào dung dịch xà phòng tạo thành nhũ tương."
+                    },
+                    {
+                        section: "tf",
+                        question: "Câu 27. Cho các phản ứng sau: Những phản ứng nào không được gọi là phản ứng xà phòng hoá?",
+                        options: [
+                            "1/ Thuỷ phân ester trong môi trường acid. [ĐÚNG]",
+                            "2/ Thuỷ phân ester trong dung dịch NaOH, đun nóng. [SAI]",
+                            "3/ Cho ester tác dụng với dung dịch KOH, đun nóng. [SAI]",
+                            "4/ Thuỷ phân dẫn xuất halogen trong dung dịch NaOH, đun nóng. [ĐÚNG]",
+                            "5/ Cho carboxylic acid tác dụng với dung dịch NaOH. [ĐÚNG]"
+                        ],
+                        correctMap: [true, false, false, true, true],
+                        explanation: "Phản ứng xà phòng hóa là thủy phân ester trong môi trường kiềm. Ý 1, 4, 5 không phải xà phòng hóa."
+                    },
+                    {
+                        section: "tf",
+                        question: "Câu 28. Các phát biểu sau đây là đúng hay sai?",
+                        options: [
+                            "1/ So với các đồng phân là carboxylic acid, ester luôn có nhiệt độ sôi thấp hơn. [ĐÚNG]",
+                            "2/ Phản ứng ester hoá là phản ứng thuận nghịch. [ĐÚNG]",
+                            "3/ Phản ứng xà phòng hoá là phản ứng thuận nghịch. [SAI]",
+                            "4/ Ester là những chất lỏng hoặc chất rắn ở nhiệt độ thường. [ĐÚNG]"
+                        ],
+                        correctMap: [true, true, false, true],
+                        explanation: "Phản ứng xà phòng hóa là phản ứng một chiều (không thuận nghịch)."
+                    },
+                    {
+                        section: "tf",
+                        question: "Câu 29. Tiến hành thí nghiệm điều chế isoamyl acetate theo các bước quy định. Những phát biểu nào sau đây là đúng?",
+                        options: [
+                            "a/ H₂SO₄ đặc có vai trò xúc tác cho phản ứng tạo isoamyl acetate. [ĐÚNG]",
+                            "b/ Thêm dung dịch NaCl bão hoà vào để tránh phân huỷ sản phẩm. [SAI]",
+                            "c/ Sau bước 2, trong ống nghiệm vẫn còn CH₃CH(CH₃)CH₂CH₂OH và CH₃COOH. [ĐÚNG]",
+                            "d/ Sau bước 3, trong ống nghiệm thu được hỗn hợp chất lỏng đồng nhất. [SAI]"
+                        ],
+                        correctMap: [true, false, true, false],
+                        explanation: "Thêm NaCl bão hoà để giảm độ tan và tách lớp ester; sau bước 3 hỗn hợp phân lớp."
+                    },
+                    {
+                        section: "tf",
+                        question: "Câu 30. Quan sát sơ đồ điều chế và tinh chế isoamyl acetate trong phòng thí nghiệm. Các phát biểu liên quan:",
+                        options: [
+                            "1/ Hỗn hợp chất lỏng trước phản ứng gồm isoamyl alcohol, acetic acid và sulfuric acid đặc. [ĐÚNG]",
+                            "2/ Trong phễu chiết, lớp chất lỏng nặng hơn có thành phần chính là isoamyl acetate. [SAI]",
+                            "3/ Nhiệt kế dùng để kiểm soát nhiệt độ trong bình cầu có nhánh. [ĐÚNG]",
+                            "4/ Phễu chiết dùng để tách isoamyl acetate ra khỏi hỗn hợp sau phản ứng. [ĐÚNG]",
+                            "5/ Nước làm lạnh cho chảy vào ống sinh hàn ở vị trí (1) và chảy ra ở vị trí (2). [ĐÚNG]"
+                        ],
+                        correctMap: [true, false, true, true, true],
+                        explanation: "Lớp ester isoamyl acetate nhẹ hơn nước nên nổi ở trên lớp nước trong phễu chiết."
+                    },
+                    {
+                        section: "tf",
+                        question: "Câu 31. Các phát biểu về ester:",
+                        options: [
+                            "1/ Methyl formate là ester có phân tử khối nhỏ nhất. [ĐÚNG]",
+                            "2/ Ethyl acetate là ester tan tốt trong nước. [SAI]",
+                            "3/ Trong phân tử ester no, đơn chức, mạch hở có chứa một liên kết π. [ĐÚNG]",
+                            "4/ Benzyl acetate có công thức phân tử C₉H₁₀O₂. [ĐÚNG]",
+                            "5/ Ester là sản phẩm của phản ứng giữa acid và alcohol. [SAI]",
+                            "6/ Ester là hợp chất hữu cơ trong phân tử có nhóm -COO-. [SAI]",
+                            "7/ Ester no, đơn chức, mạch hở có công thức phân tử CₙH₂ₙO₂ (n > 2). [SAI]",
+                            "8/ Hợp chất CH₃OOCC₂H₅ thuộc dãy đồng đẳng của methyl formate. [ĐÚNG]"
+                        ],
+                        correctMap: [true, false, true, true, false, false, false, true],
+                        explanation: "Ester ít tan trong nước; nhóm -COO- cần gắn với gốc carbon; công thức chung n ≥ 2."
+                    }
+                ]
+            },
+            bai2: {
+                title: "Chương 1 - Bài 2: Xà Phòng Và Chất Giặt Rửa Tổng Hợp",
+                shortName: "Bài 2",
+                questions: [
+                    {
+                        section: "mcq",
+                        question: "Câu 1. Xà phòng và chất giặt rửa có đặc điểm chung nào sau đây?",
+                        options: ["Không tan trong nước.", "Là muối sodium hoặc potassium của acid béo.", "Là muối sulfonate hoặc sulfate của acid béo.", "Thường có cấu tạo gồm hai phần là phần không phân cực (kị nước) và phần phân cực (ưa nước)."],
+                        correct: 3,
+                        explanation: "Cả xà phòng và chất giặt rửa đều có cấu tạo lưỡng cực gồm phần ưa nước và phần kị nước."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 2. Chất nào sau đây được sử dụng làm xà phòng?",
+                        options: ["CH₃COOK.", "C₁₅H₃₁COONa.", "CH₃[CH₂]₁₁OSO₃Na.", "C₁₅H₃₁COOCH₃."],
+                        correct: 1,
+                        explanation: "C15H31COONa là muối sodium của acid béo (sodium palmitate), dùng làm xà phòng."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 3. Dung dịch nào sau đây là chất giặt rửa tự nhiên?",
+                        options: ["Nước quả cam.", "Nước quả chanh.", "Nước quả bồ kết.", "Nước quả dâu."],
+                        correct: 2,
+                        explanation: "Quả bồ kết chứa saponin dùng làm chất giặt rửa tự nhiên truyền thống."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 4. Sản phẩm của phản ứng nào sau đây dùng để sản xuất xà phòng?",
+                        options: ["Thuỷ phân tinh bột.", "Thuỷ phân ester có mạch carbon ngắn (< 12C) bằng dung dịch NaOH.", "Thuỷ phân dầu thực vật hoặc mỡ động vật bằng dung dịch NaOH.", "Thuỷ phân dầu thực vật hoặc mỡ động vật trong môi trường acid."],
+                        correct: 2,
+                        explanation: "Xà phòng được sản xuất bằng cách xà phòng hóa chất béo (dầu thực vật/mỡ động vật) với NaOH hoặc KOH."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 5. Thuỷ phân hoàn toàn triglyceride X bằng dung dịch NaOH thu được xà phòng có công thức là C₁₇H₃₅COONa. Công thức cấu tạo của X là",
+                        options: ["(C₁₇H₃₅COO)₃C₃H₅.", "(C₁₇H₃₃COO)₃C₃H₅.", "C₁₇H₃₅COOC₃H₅.", "(C₁₅H₃₁COO)₃C₃H₅."],
+                        correct: 0,
+                        explanation: "Muối C17H35COONa ứng với tristearin: (C17H35COO)3C3H5."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 6. Chất giặt rửa tổng hợp chủ yếu được sản xuất từ",
+                        options: ["mỡ động vật.", "dầu thực vật.", "quả bồ kết, bồ hòn.", "dầu mỏ."],
+                        correct: 3,
+                        explanation: "Chất giặt rửa tổng hợp chủ yếu được sản xuất từ nguồn hydrocarbon dầu mỏ."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 7. Khi cho vài giọt dầu ăn vào dung dịch xà phòng, lắc đều. Hiện tượng quan sát được là",
+                        options: ["dầu ăn không tan và nổi lên trên.", "dầu ăn không tan và chìm xuống dưới.", "dầu ăn tan vào dung dịch xà phòng.", "dầu ăn kết tủa lắng xuống dưới đáy."],
+                        correct: 2,
+                        explanation: "Dầu ăn phân tán đều vào dung dịch xà phòng tạo thành nhũ tương."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 8. Quần áo bị dính bẩn bởi dầu luyện (dầu nhớt). Nên sử dụng chất nào sau đây để loại bỏ vết bẩn đó?",
+                        options: ["Dung dịch muối ăn.", "Chất giặt rửa tổng hợp.", "Dung dịch HCl.", "Dung dịch NaOH."],
+                        correct: 1,
+                        explanation: "Dầu nhớt khoáng từ dầu mỏ được tẩy sạch tốt nhất bởi chất giặt rửa tổng hợp."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 9. Khi xà phòng hoá tristearin thu được sản phẩm là",
+                        options: ["C₁₅H₃₁COONa và C₂H₅OH.", "C₁₇H₃₅COOH và C₃H₅(OH)₃.", "C₁₅H₃₁COOH và C₃H₅(OH)₃.", "C₁₇H₃₅COONa và C₃H₅(OH)₃."],
+                        correct: 3,
+                        explanation: "Xà phòng hóa tristearin thu được sodium stearate (C17H35COONa) và glycerol [C3H5(OH)3]."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 10. Chất nào sau đây là thành phần chính chủ yếu của xà phòng?",
+                        options: ["CH₃COONa.", "CH₃(CH₂)₃COONa.", "CH₂=CHCOONa.", "C₁₇H₃₅COONa."],
+                        correct: 3,
+                        explanation: "C17H35COONa là muối của acid béo tiêu biểu trong xà phòng."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 11. Từ tristearin, người ta dùng phản ứng nào để điều chế xà phòng?",
+                        options: ["Phản ứng ester hoá.", "Phản ứng thuỷ phân ester trong môi trường acid.", "Phản ứng cộng hydrogen.", "Phản ứng thuỷ phân ester trong môi trường kiềm."],
+                        correct: 3,
+                        explanation: "Điều chế xà phòng bằng phản ứng thủy phân chất béo trong môi trường kiềm."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 12. Chất nào sau đây là thành phần chính của chất giặt rửa tổng hợp?",
+                        options: ["C₁₅H₃₁COONa.", "(C₁₇H₃₅COO)₂Ca.", "CH₃[CH₂]₁₁OSO₃Na.", "C₁₇H₃₅COOK."],
+                        correct: 2,
+                        explanation: "CH3[CH2]11OSO3Na là muối sodium alkyl sulfate, tiêu biểu cho chất giặt rửa tổng hợp."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 13. Dầu mỡ khi chiên rán nhiều lần thường có mùi khó chịu do nguyên nhân chính là dầu mỡ bị",
+                        options: ["thuỷ phân.", "xà phòng hoá.", "oxi hoá.", "hydrogen hoá."],
+                        correct: 2,
+                        explanation: "Dầu mỡ bị oxi hóa bởi oxy không khí và nhiệt độ cao."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 14. Xà phòng hoá chất béo nào sau đây thu được sodium stearate?",
+                        options: ["(C₁₇H₃₅COO)₃C₃H₅.", "(C₁₇H₃₃COO)₃C₃H₅.", "(C₁₇H₃₁COO)₃C₃H₅.", "(C₁₆H₃₃COO)₃C₃H₅."],
+                        correct: 0,
+                        explanation: "Sodium stearate ứng với gốc acid C17H35COO trong tristearin."
+                    },
+                    {
+                        section: "tf",
+                        question: "Câu 1. Các phát biểu về xà phòng và chất giặt rửa:",
+                        options: [
+                            "a) Xà phòng là sản phẩm của phản ứng xà phòng hoá. [ĐÚNG]",
+                            "b) Muối sodium hoặc potassium của acid hữu cơ là thành phần chính của xà phòng. [SAI]",
+                            "c) Khi đun nóng chất béo với dung dịch NaOH hoặc KOH, thu được xà phòng. [ĐÚNG]",
+                            "d) Có thể sản xuất được xà phòng từ các alkane mạch dài thu được từ chế biến dầu mỏ. [ĐÚNG]"
+                        ],
+                        correctMap: [true, false, true, true],
+                        explanation: "Xà phòng phải là muối của acid béo (acid carboxylic mạch dài), không phải mọi acid hữu cơ."
+                    },
+                    {
+                        section: "tf",
+                        question: "Câu 2. Các phát biểu về đặc tính chất giặt rửa:",
+                        options: [
+                            "a) Các chất giặt rửa đều được sản xuất bằng cách đun nóng dầu, mỡ với kiềm. [SAI]",
+                            "b) Xà phòng là hỗn hợp muối sodium hoặc potassium của acid béo, không nên dùng trong nước cứng vì tạo kết tủa. [ĐÚNG]",
+                            "c) Chất giặt rửa tổng hợp không phải muối sodium của carboxylic acid và không bị kết tủa trong nước cứng. [ĐÚNG]",
+                            "d) Các chất giặt rửa đều có khả năng hoạt động bề mặt cao, làm giảm sức căng bề mặt. [SAI]",
+                            "e) Chất giặt rửa cấu tạo gồm hai phần, một phần ưa nước và một phần kị nước. [ĐÚNG]",
+                            "f) Chất giặt rửa tổng hợp tương tự xà phòng ở phần kị nước, còn phần ưa nước là các nhóm khác nhau. [ĐÚNG]",
+                            "g) Chất giặt rửa làm giảm sức căng bề mặt dung dịch và tăng tính thấm ướt. [ĐÚNG]",
+                            "h) Từ nguồn dầu mỏ, có thể sản xuất được cả xà phòng và chất giặt rửa tổng hợp. [ĐÚNG]"
+                        ],
+                        correctMap: [false, true, true, false, true, true, true, true],
+                        explanation: "Chất giặt rửa tổng hợp sản xuất từ dầu mỏ; một số chất giặt rửa có hoạt tính chuyên biệt."
+                    }
+                ]
+            },
+            bai3: {
+                title: "Chương 2 - Bài 3: Glucose Và Fructose",
+                shortName: "Bài 3",
+                questions: [
+                    {
+                        section: "mcq",
+                        question: "Câu 1. Chất nào sau đây không thuộc nhóm hợp chất carbohydrate?",
+                        options: ["Tinh bột.", "Glucosamine.", "Fructose.", "Glucose."],
+                        correct: 1,
+                        explanation: "Glucosamine là dẫn xuất amin, không phải carbohydrate thuần túy."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 2. Phát biểu nào sau đây không đúng về glucose và fructose?",
+                        options: ["Chúng đều có công thức phân tử C₆H₁₂O₆.", "Chúng đều là các hợp chất carbohydrate.", "Chúng đều là các monosaccharide.", "Chúng có tính chất hoá học tương tự nhau."],
+                        correct: 3,
+                        explanation: "Glucose và fructose có tính chất hóa học khác nhau một phần (như phản ứng với nước bromine)."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 3. Carbohydrate nào sau đây là thành phần chính của mật ong?",
+                        options: ["Glucose.", "Maltose.", "Saccharose.", "Fructose."],
+                        correct: 3,
+                        explanation: "Fructose chiếm hàm lượng cao trong mật ong, tạo vị ngọt sắc."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 4. Công thức nào dưới đây phù hợp với công thức cấu tạo của β-glucose?",
+                        options: ["Công thức (A) - Dạng vòng β-glucose (nhóm -OH ở C1 hướng lên trên).", "Công thức (B) - Dạng vòng α-glucose (nhóm -OH ở C1 hướng xuống dưới).", "Công thức (C) - Dạng vòng fructose.", "Công thức (D) - Dạng vòng galactose."],
+                        correct: 0,
+                        explanation: "Ở dạng vòng β-glucose, nhóm -OH hemiacetal ở C1 hướng lên trên."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 5. Hormone nào sau đây làm giảm lượng glucose trong máu?",
+                        options: ["Adrenaline.", "Thyroxine.", "Insulin.", "Oxytocin."],
+                        correct: 2,
+                        explanation: "Insulin do tuyến tụy tiết ra làm giảm đường huyết."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 6. Tuyến nội tiết nào sau đây giữ cho nồng độ glucose trong máu ổn định?",
+                        options: ["Tuyến yên.", "Tuyến tuỵ.", "Tuyến thượng thận.", "Tuyến giáp."],
+                        correct: 1,
+                        explanation: "Tuyến tụy điều hòa nồng độ glucose trong máu."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 7. Trong công thức của fructose ở hình bên, nhóm -OH hemiketal là nhóm -OH được đánh số",
+                        options: ["(1).", "(3).", "(2).", "(4)."],
+                        correct: 0,
+                        explanation: "Nhóm -OH hemiketal ở vị trí carbon (1) của fructose theo định danh đề bài."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 8. Glucose là một loại monosaccharide có nhiều trong quả nho chín. Công thức phân tử của glucose là:",
+                        options: ["C₂H₄O₂.", "(C₆H₁₀O₅)ₙ.", "C₁₂H₂₂O₁₁.", "C₆H₁₂O₆."],
+                        correct: 3,
+                        explanation: "Công thức phân tử của glucose là C6H12O6."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 9. Fructose là một loại monosaccharide có nhiều trong mật ong, vị ngọt sắc. Công thức phân tử của fructose là",
+                        options: ["C₆H₁₂O₆.", "C₂H₄O₂.", "C₁₂H₂₂O₁₁.", "(C₆H₁₀O₅)ₙ."],
+                        correct: 0,
+                        explanation: "Fructose là đồng phân của glucose, công thức C6H12O6."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 10. Để phân biệt glucose và fructose người ta dùng",
+                        options: ["H₂ (Ni, t°).", "dd AgNO₃/NH₃.", "nước Br₂.", "Cu(OH)₂."],
+                        correct: 2,
+                        explanation: "Glucose làm mất màu nước bromine còn fructose thì không ở điều kiện thường."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 11. Trong điều kiện thích hợp glucose lên men tạo thành khí CO₂ và",
+                        options: ["C₂H₅OH.", "CH₃COOH.", "HCOOH.", "CH₃CHO."],
+                        correct: 0,
+                        explanation: "Lên men rượu glucose tạo ethanol và CO2."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 12. Khi bị ốm, mất sức, nhiều người bệnh thường được truyền dịch đường để bổ sung nhanh năng lượng. Chất trong dịch truyền là",
+                        options: ["Glucose.", "Saccharose.", "Fructose.", "Maltose."],
+                        correct: 0,
+                        explanation: "Dịch truyền tĩnh mạch sử dụng dung dịch glucose 5%."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 13. Để tráng một lớp bạc lên ruột phích, người ta cho chất X phản ứng với lượng dư dung dịch AgNO₃ trong NH₃, đun nóng. Chất X là",
+                        options: ["ethyl acetate.", "glucose.", "tinh bột.", "saccharose."],
+                        correct: 1,
+                        explanation: "Glucose có nhóm -CHO tham gia phản ứng tráng bạc."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 14. Để chứng minh trong phân tử của glucose có nhiều nhóm hydroxyl, người ta cho dung dịch glucose phản ứng với",
+                        options: ["kim loại Na.", "AgNO₃ trong dung dịch NH₃, đun nóng.", "nước bromine.", "Cu(OH)₂ ở nhiệt độ thường."],
+                        correct: 3,
+                        explanation: "Glucose hòa tan Cu(OH)2 ở nhiệt độ thường tạo dung dịch xanh lam đặc trưng của polyalcohol."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 15. Saccharose là một disaccharide. Phát biểu nào sau đây về saccharose là đúng?",
+                        options: ["Saccharose không bị thuỷ phân trong môi trường acid.", "Thuỷ phân saccharose chỉ thu được glucose.", "Thuỷ phân saccharose thu được cả glucose và fructose.", "Thuỷ phân saccharose chỉ thu được fructose."],
+                        correct: 2,
+                        explanation: "Thủy phân saccharose thu được cả glucose và fructose."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 16. Đun nóng dung dịch chứa 10 gam glucose với dung dịch AgNO₃ (dư) trong ammonia thấy có kim loại bạc tách ra. Khối lượng kim loại bạc tối đa thu được là",
+                        options: ["6,0 gam.", "9,0 gam.", "10,8 gam.", "12,0 gam."],
+                        correct: 3,
+                        explanation: "n_glucose = 10/180 mol -> n_Ag = 20/180 mol -> m_Ag = 12.0 gam."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 17. Cho m gam glucose phản ứng hoàn toàn với lượng dư dung dịch AgNO₃ trong NH₃ (đun nóng), thu được 21.6 gam Ag. Giá trị của m là",
+                        options: ["16,2.", "9,0.", "36,0.", "18,0."],
+                        correct: 3,
+                        explanation: "n_Ag = 21.6/108 = 0.2 mol -> n_glucose = 0.1 mol -> m = 18.0 gam."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 18. Cho các phát biểu sau:(1) Glucose và fructose không tham gia phản ứng thuỷ phân.(2) Có thể phân biệt glucose và fructose bằng nước bromine.(3) Carbohydrate là những hợp chất hữu cơ tạp chức, thường có công thức chung là Cₙ(H₂O)ₘ.(4) Chất béo không phải carbohydrate.Số phát biểu đúng là",
+                        options: ["1.", "2.", "3.", "4."],
+                        correct: 3,
+                        explanation: "Cả 4 phát biểu (1), (2), (3), (4) đều đúng, đáp án là D. 4."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 19. Cho các chất: methanol, glycerol, glucose, maltose, acetic acid, fructose, cellulose. Có bao nhiêu chất thuộc loại carbohydrate?",
+                        options: ["3.", "4.", "5.", "6."],
+                        correct: 1,
+                        explanation: "Các carbohydrate gồm glucose, maltose, fructose, cellulose (tổng 4 chất)."
+                    },
+                    {
+                        section: "tf",
+                        question: "Câu 20. Dựa vào kiến thức về cấu tạo và tính chất của glucose và fructose, hãy xác định các phát biểu sau là đúng hay sai?",
+                        options: [
+                            "a) Glucose và fructose đều có công thức phân tử là C₆H₁₂O₆. [ĐÚNG]",
+                            "b) Glucose và fructose đều tồn tại dạng mạch hở và mạch vòng. [ĐÚNG]",
+                            "c) Glucose và fructose đều là pentahydroxy aldehyde. [SAI]",
+                            "d) Dạng vòng thông dụng của glucose và fructose đều là vòng sáu cạnh. [SAI]"
+                        ],
+                        correctMap: [true, true, false, false],
+                        explanation: "Fructose dạng vòng thông dụng là 5 cạnh (furanose), glucose là 6 cạnh (pyranose); fructose là ketone."
+                    },
+                    {
+                        section: "tf",
+                        question: "Câu 21. Glucose và fructose đều là monosaccharide có tính khử. Mỗi phát biểu bên dưới về tính chất hoá học là đúng hay sai?",
+                        options: [
+                            "a) Đều phản ứng được với thuốc thử Tollens. [ĐÚNG]",
+                            "b) Đều làm mất màu nước bromine. [SAI]",
+                            "c) Dung dịch mỗi chất đều hoà tan được Cu(OH)₂. [ĐÚNG]",
+                            "d) Đều phản ứng được với Cu(OH)₂ trong môi trường kiềm nóng tạo kết tủa đỏ gạch. [ĐÚNG]"
+                        ],
+                        correctMap: [true, false, true, true],
+                        explanation: "Fructose không làm mất màu nước bromine ở điều kiện thường."
+                    },
+                    {
+                        section: "tf",
+                        question: "Câu 22. Glucose và fructose có nhiều phản ứng hoá học quan trọng. Mỗi phát biểu bên dưới đây là đúng hay sai?",
+                        options: [
+                            "a) Fructose phản ứng với thuốc thử Tollens sinh ra ammonium gluconate. [ĐÚNG]",
+                            "b) Glucose phản ứng với Cu(OH)₂ trong dung dịch NaOH nóng tạo sodium gluconate. [ĐÚNG]",
+                            "c) Glucose phản ứng với nước bromine tạo gluconic acid. [ĐÚNG]"
+                        ],
+                        correctMap: [true, true, true],
+                        explanation: "Tất cả các phát biểu này đều chính xác theo chương trình SGK."
+                    }
+                ]
+            },
+            bai4: {
+                title: "Chương 2 - Bài 4: Saccharose Và Maltose",
+                shortName: "Bài 4",
+                questions: [
+                    {
+                        section: "mcq",
+                        question: "Câu 1. Saccharose là một loại disaccharide có nhiều trong cây mía, hoa thốt nốt, củ cải đường. Công thức phân tử của saccharose là",
+                        options: ["C₆H₁₂O₆.", "(C₆H₁₀O₅)ₙ.", "C₁₂H₂₂O₁₁.", "C₂H₄O₂."],
+                        correct: 2,
+                        explanation: "Công thức phân tử của saccharose là C12H22O11."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 2. Carbohydrate nào sau đây có cấu trúc phân tử không đổi ở trạng thái rắn hoặc trong dung dịch?",
+                        options: ["Glucose.", "Fructose.", "Saccharose.", "Maltose."],
+                        correct: 2,
+                        explanation: "Saccharose khóa nhóm -OH hemiacetal nên không mở vòng trong dung dịch."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 3. Maltose là một loại disaccharide có nhiều trong mạch nha. Công thức phân tử của maltose là",
+                        options: ["C₆H₁₂O₆.", "(C₆H₁₀O₅)ₙ.", "C₁₂H₂₂O₁₁.", "C₃H₆O₂."],
+                        correct: 2,
+                        explanation: "Maltose có công thức C12H22O11."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 4. Saccharose được cấu tạo từ",
+                        options: ["hai đơn vị glucose qua liên kết α-1,4-glycoside.", "một đơn vị glucose và một đơn vị fructose qua liên kết α-1,2-glycoside.", "hai đơn vị fructose qua liên kết β-1,4-glycoside.", "một đơn vị glucose và một đơn vị galactose qua liên kết α-1,4-glycoside."],
+                        correct: 1,
+                        explanation: "Saccharose cấu tạo từ 1 gốc α-glucose và 1 gốc β-fructose qua liên kết α-1,2-glycoside."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 5. Maltose được tạo ra từ quá trình nào sau đây?",
+                        options: ["Thuỷ phân saccharose.", "Thuỷ phân tinh bột.", "Kết hợp glucose và fructose.", "Lên men ethanol."],
+                        correct: 1,
+                        explanation: "Maltose thu được khi thủy phân không hoàn toàn tinh bột."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 6. Saccharose tham gia phản ứng nào sau đây?",
+                        options: ["Phản ứng với thuốc thử Tollens.", "Phản ứng với nước bromine.", "Phản ứng với Cu(OH)₂ tạo dung dịch màu xanh lam.", "Phản ứng thuỷ phân trong môi trường kiềm."],
+                        correct: 2,
+                        explanation: "Saccharose hòa tan Cu(OH)2 tạo dung dịch phức xanh lam."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 7. Phản ứng đặc trưng của maltose là",
+                        options: ["Phản ứng với dung dịch NaOH.", "Phản ứng màu với iodine.", "Phản ứng thuỷ phân tạo ra glucose.", "Phản ứng lên men trực tiếp tạo ra ethanol."],
+                        correct: 2,
+                        explanation: "Maltose bị thủy phân tạo ra glucose."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 8. Saccharose và maltose đều tham gia phản ứng nào sau đây?",
+                        options: ["Phản ứng với thuốc thử Tollens.", "Phản ứng thuỷ phân trong môi trường acid.", "Phản ứng với dung dịch nước bromine.", "Phản ứng với Cu(OH)₂ tạo kết tủa đỏ gạch."],
+                        correct: 1,
+                        explanation: "Cả saccharose và maltose đều bị thủy phân trong môi trường acid."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 9. Saccharose thường được tìm thấy trong loại thực vật nào sau đây?",
+                        options: ["Cây đậu nành.", "Cây lúa mì.", "Cây mía.", "Cây cà phê."],
+                        correct: 2,
+                        explanation: "Saccharose có nhiều trong cây mía, củ cải đường."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 10. Một phân tử saccharose có",
+                        options: ["một đơn vị β-glucose và một đơn vị β-fructose.", "một đơn vị β-glucose và một đơn vị α-fructose.", "hai đơn vị α-glucose.", "một đơn vị α-glucose và một đơn vị β-fructose."],
+                        correct: 3,
+                        explanation: "Saccharose gồm 1 đơn vị α-glucose và 1 đơn vị β-fructose."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 11. Một phân tử maltose có",
+                        options: ["một đơn vị β-glucose và một đơn vị β-fructose.", "một đơn vị β-glucose và một đơn vị α-fructose.", "hai đơn vị α-glucose.", "một đơn vị α-glucose và một đơn vị β-fructose."],
+                        correct: 2,
+                        explanation: "Maltose gồm 2 đơn vị α-glucose."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 12. Đơn vị glucose và đơn vị fructose trong phân tử saccharose liên kết với nhau qua nguyên tử",
+                        options: ["hydrogen.", "nitrogen.", "carbon.", "oxygen."],
+                        correct: 3,
+                        explanation: "Liên kết glycoside là liên kết qua nguyên tử oxygen."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 13. Carbohydrate nào dưới đây không có nhóm -OH hemiacetal (hoặc hemiketal)?",
+                        options: ["Glucose.", "Fructose.", "Saccharose.", "Maltose."],
+                        correct: 2,
+                        explanation: "Saccharose đã khóa cả hai nhóm khử nên không còn nhóm -OH hemiacetal tự do."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 14. Chất nào sau đây không tham gia phản ứng thuỷ phân?",
+                        options: ["Methyl acetate.", "Saccharose.", "Glucose.", "Triolein."],
+                        correct: 2,
+                        explanation: "Glucose là monosaccharide không bị thủy phân."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 15. Trong dung dịch, saccharose phản ứng với Cu(OH)₂ cho dung dịch màu",
+                        options: ["vàng.", "xanh lam.", "tím.", "nâu đỏ."],
+                        correct: 1,
+                        explanation: "Saccharose tạo dung dịch xanh lam với Cu(OH)2."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 16. Saccharose và glucose đều có phản ứng",
+                        options: ["cộng H₂ (Ni, t°).", "tráng bạc.", "với Cu(OH)₂.", "thuỷ phân."],
+                        correct: 2,
+                        explanation: "Cả hai đều tác dụng với Cu(OH)2 ở nhiệt độ thường."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 17. Phản ứng nào sau đây không xảy ra?",
+                        options: ["Glucose + AgNO₃/NH₃.", "Fructose + Cu(OH)₂/OH⁻.", "Saccharose + Br₂/H₂O.", "Saccharose + H₂O (H⁺, t°)."],
+                        correct: 2,
+                        explanation: "Saccharose không phản ứng với nước bromine do không có tính khử."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 18. Phát biểu nào sau đây đúng?",
+                        options: ["Saccharose và fructose là đồng phân của nhau.", "Saccharose chỉ có cấu tạo dạng mạch vòng.", "Maltose có nhiều trong mạch nha.", "Saccharose và maltose đều là disaccharide."],
+                        correct: 0,
+                        explanation: "Saccharose và fructose có cùng công thức C6H12O6 nên là đồng phân của nhau."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 19. Phát biểu nào sau đây đúng?",
+                        options: ["Maltose không có nhóm -OH hemiacetal.", "Một phân tử saccharose gồm hai đơn vị α-glucose.", "Hai đơn vị α-glucose trong maltose liên kết với nhau bằng liên kết α-1,4-glycoside.", "Saccharose và maltose có cùng công thức phân tử."],
+                        correct: 3,
+                        explanation: "Saccharose và maltose đều là disaccharide có cùng công thức phân tử C12H22O11."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 20. Carbohydrate X là một disaccharide có nhiều trong củ cải đường. Thuỷ phân hoàn toàn X trong môi trường acid thu được Y có khả năng làm mất màu nước bromine. Tên gọi của X và Y lần lượt là",
+                        options: ["Maltose, glucose.", "Saccharose, fructose.", "Saccharose, glucose.", "Maltose, fructose."],
+                        correct: 2,
+                        explanation: "X là saccharose, thủy phân thu được glucose (Y) làm mất màu nước bromine."
+                    },
+                    {
+                        section: "tf",
+                        question: "Câu 21. Saccharose là đường ăn hằng ngày, còn maltose có trong mạch nha. Mỗi phát biểu bên dưới đây về cấu tạo là đúng hay sai?",
+                        options: [
+                            "a) Maltose được tạo thành từ hai đơn vị fructose. [SAI]",
+                            "b) Maltose có liên kết α-1,4-glycoside giữa hai đơn vị glucose. [ĐÚNG]",
+                            "c) Phân tử saccharose chứa một liên kết β-1,2-glycoside. [SAI]",
+                            "d) Phân tử saccharose chỉ tồn tại dạng mạch vòng. [ĐÚNG]"
+                        ],
+                        correctMap: [false, true, false, true],
+                        explanation: "Maltose tạo bởi 2 đơn vị glucose; saccharose chứa liên kết α-1,2-glycoside."
+                    },
+                    {
+                        section: "tf",
+                        question: "Câu 22. Quan sát cấu trúc maltose dạng mạch vòng và mạch mở vòng. Phát biểu đúng hay sai?",
+                        options: [
+                            "a) Phân tử maltose tạo bởi hai đơn vị glucose, liên kết qua oxygen giữa C₁ và C₄. [ĐÚNG]",
+                            "b) Phân tử maltose còn một nhóm -OH hemiacetal. [ĐÚNG]",
+                            "c) Thuỷ phân maltose chỉ thu được glucose. [ĐÚNG]",
+                            "d) Maltose không có khả năng phản ứng với thuốc thử Tollens. [SAI]"
+                        ],
+                        correctMap: [true, true, true, false],
+                        explanation: "Maltose có tính khử nên phản ứng được với thuốc thử Tollens (tráng bạc)."
+                    },
+                    {
+                        section: "tf",
+                        question: "Câu 23. Tiến hành thí nghiệm tráng bạc của glucose. Mỗi phát biểu bên dưới đây là đúng hay sai?",
+                        options: [
+                            "a) Sản phẩm hữu cơ thu được sau bước 2 là ammonium gluconate. [ĐÚNG]",
+                            "b) Thí nghiệm trên chứng minh glucose có tính chất của polyalcohol. [SAI]",
+                            "c) Sau bước 2, có lớp bạc kim loại bám trên thành ống nghiệm. [ĐÚNG]",
+                            "d) Trong phản ứng ở bước 2, glucose đóng vai trò là chất khử. [ĐÚNG]"
+                        ],
+                        correctMap: [true, false, true, true],
+                        explanation: "Thí nghiệm tráng bạc chứng minh glucose có tính chất của aldehyde (chất khử)."
+                    }
+                ]
+            },
+            bai5: {
+                title: "Chương 2 - Bài 5: Tinh Bột Và Cellulose",
+                shortName: "Bài 5",
+                questions: [
+                    {
+                        section: "mcq",
+                        question: "Câu 1. Tinh bột chứa hỗn hợp chất nào sau đây?",
+                        options: ["Glucose và fructose.", "Amylose và cellulose.", "Amylose và amylopectin.", "Glucose và galactose."],
+                        correct: 2,
+                        explanation: "Tinh bột gồm amylose và amylopectin."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 2. Amylopectin khác biệt cơ bản với amylose ở điểm nào sau đây?",
+                        options: ["Có cấu tạo mạch phân nhánh.", "Chỉ chứa liên kết α-1,4-glycoside.", "Không tan trong nước.", "Tạo màu xanh tím với iodine."],
+                        correct: 0,
+                        explanation: "Amylopectin có cấu tạo mạch phân nhánh."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 3. Phân tử cellulose cấu tạo từ các đơn vị nào sau đây?",
+                        options: ["α-glucose.", "β-glucose.", "Fructose.", "Galactose."],
+                        correct: 1,
+                        explanation: "Cellulose cấu tạo từ các đơn vị β-glucose."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 4. Tinh bột và cellulose đều tham gia phản ứng nào sau đây?",
+                        options: ["Phản ứng thuỷ phân.", "Phản ứng màu với dung dịch iodine.", "Phản ứng với thuốc thử Tollens.", "Phản ứng với nước bromine."],
+                        correct: 0,
+                        explanation: "Cả tinh bột và cellulose đều bị thủy phân trong môi trường acid."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 5. Cellulose không tan trong nước nhưng tan trong dung dịch nào sau đây?",
+                        options: ["Dung dịch NaOH.", "Dung dịch ethanol.", "Nước Schweizer.", "Nước bromine."],
+                        correct: 2,
+                        explanation: "Cellulose tan trong nước Schweizer [phức của Cu(OH)2 trong ammonia]."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 6. Cellulose phản ứng với nitric acid tạo thành sản phẩm nào sau đây?",
+                        options: ["Glucose.", "Dextrin.", "Maltose.", "Cellulose nitrate."],
+                        correct: 3,
+                        explanation: "Cellulose tác dụng với HNO3 đặc tạo cellulose nitrate."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 7. Chất nào sau đây có thể thu được khi thuỷ phân không hoàn toàn tinh bột?",
+                        options: ["Cellulose.", "Dextrin.", "Fructose.", "Saccharose."],
+                        correct: 1,
+                        explanation: "Thủy phân không hoàn toàn tinh bột thu được dextrin."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 8. Cellulose không có tính chất nào sau đây?",
+                        options: ["Tan trong nước Schweizer.", "Phản ứng tạo màu xanh tím với iodine.", "Phản ứng với nitric acid tạo cellulose nitrate.", "Thuỷ phân hoàn toàn tạo glucose."],
+                        correct: 1,
+                        explanation: "Cellulose không tạo màu xanh tím với iodine (chỉ có tinh bột tạo màu xanh tím với iodine)."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 9. Cellulose không được sử dụng trong ứng dụng nào sau đây?",
+                        options: ["Sản xuất các thiết bị điện.", "Nguyên liệu sản xuất ethanol và cellulose nitrate.", "Sản xuất giấy, tơ tự nhiên và sợi nhân tạo.", "Vật liệu gỗ xây dựng."],
+                        correct: 0,
+                        explanation: "Cellulose không dùng sản xuất thiết bị điện."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 10. Số carbohydrate đã cho có liên kết α-1,4-glycoside trong phân tử là",
+                        options: ["1.", "2.", "3.", "4."],
+                        correct: 2,
+                        explanation: "Số carbohydrate có liên kết α-1,4-glycoside là 3 (amylose, amylopectin, maltose)."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 11. Số carbohydrate đã cho có thể có liên kết α-1,6-glycoside trong phân tử là",
+                        options: ["1.", "2.", "3.", "4."],
+                        correct: 0,
+                        explanation: "Amylopectin chứa liên kết α-1,6-glycoside ở điểm nhánh."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 12. Carbohydrate nào có cấu trúc phân tử được biểu diễn dưới đây?",
+                        options: ["Saccharose.", "Cellulose.", "Maltose.", "Amylose."],
+                        correct: 3,
+                        explanation: "Cấu trúc polymer amylose cấu tạo từ α-glucose liên kết qua α-1,4-glycoside."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 13. Quan sát cấu trúc phân tử carbohydrate X (Cấu trúc polymer tạo bởi các đơn vị β-glucose liên kết qua β-1,4-glycoside, mạch không phân nhánh, n = 7000). Phát biểu nào đúng về X?",
+                        options: ["X có nhiều trong trái cây chín.", "X chỉ có cấu trúc mạch không phân nhánh.", "X có vị ngọt hơn glucose.", "X là thành phần chính của các loại hạt như ngô, gạo, đậu, ..."],
+                        correct: 1,
+                        explanation: "X là cellulose có cấu trúc mạch không phân nhánh."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 14. Trong số 6 carbohydrate: glucose, fructose, saccharose, maltose, tinh bột và cellulose, số carbohydrate cho được phản ứng thuỷ phân là",
+                        options: ["2.", "3.", "4.", "5."],
+                        correct: 2,
+                        explanation: "Các chất bị thủy phân gồm saccharose, maltose, tinh bột, cellulose (tổng 4 chất)."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 15. Tinh bột thuộc loại polysaccharide, có nhiều trong ngũ cốc. Công thức của tinh bột là",
+                        options: ["(C₆H₁₀O₅)ₙ.", "C₁₂H₂₂O₁₁.", "C₆H₁₂O₆.", "C₂H₄O₂."],
+                        correct: 0,
+                        explanation: "Công thức của tinh bột là (C6H10O5)n."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 16. Cellulose thuộc loại polysaccharide, thành phần chính màng tế bào thực vật. Công thức của cellulose là",
+                        options: ["(C₆H₁₀O₅)ₙ.", "C₁₂H₂₂O₁₁.", "C₆H₁₂O₆.", "C₂H₄O₂."],
+                        correct: 0,
+                        explanation: "Công thức của cellulose là (C6H10O5)n."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 17. Cellulose có cấu tạo mạch không phân nhánh, mỗi đơn vị C₆H₁₀O₅ có 3 nhóm OH, nên có thể viết là",
+                        options: ["[C₆H₅O₂(OH)₃]ₙ.", "[C₆H₈O₂(OH)₃]ₙ.", "[C₆H₇O₂(OH)₃]ₙ.", "[C₆H₇O₃(OH)₂]ₙ."],
+                        correct: 2,
+                        explanation: "Công thức cấu tạo chi tiết của cellulose: [C6H7O2(OH)3]n."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 18. Trong các chất dưới đây, chất nào được tạo thành từ đơn vị khác ngoài đơn vị glucose?",
+                        options: ["Maltose.", "Saccharose.", "Tinh bột.", "Cellulose."],
+                        correct: 1,
+                        explanation: "Saccharose cấu tạo từ glucose và fructose."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 19. Đun nóng tinh bột trong dung dịch acid vô cơ loãng sẽ thu được",
+                        options: ["cellulose.", "glucose.", "glycerol.", "ethyl acetate."],
+                        correct: 1,
+                        explanation: "Thủy phân tinh bột thu được glucose."
+                    },
+                    {
+                        section: "mcq",
+                        question: "Câu 20. Dãy các chất đều có khả năng tham gia phản ứng thuỷ phân trong dung dịch H₂SO₄ đun nóng là",
+                        options: ["glucose, tinh bột và cellulose.", "saccharose, tinh bột và cellulose.", "glucose, saccharose và fructose.", "fructose, saccharose và tinh bột."],
+                        correct: 1,
+                        explanation: "Saccharose, tinh bột và cellulose đều bị thủy phân trong acid."
+                    },
+                    {
+                        section: "tf",
+                        question: "Câu 21. Cellulose là nguyên liệu quan trọng trong công nghiệp giấy, dệt và sản xuất vật liệu nổ như nitrocellulose. Mỗi phát biểu bên dưới đây là đúng hay sai?",
+                        options: [
+                            "a) Cellulose có nhiều ứng dụng trong công nghiệp nhờ vào phản ứng với một số hoá chất đặc biệt. [ĐÚNG]",
+                            "b) Cellulose có thể tạo thành cellulose nitrate khi phản ứng với HNO₃. [SAI]",
+                            "c) Phản ứng thuỷ phân của cellulose tạo ra fructose. [SAI]",
+                            "d) Thuỷ phân hoàn toàn tinh bột và cellulose đều tạo thành glucose. [ĐÚNG]",
+                            "e) Cellulose tạo ra màu xanh lam khi phản ứng với nước Schweizer. [ĐÚNG]"
+                        ],
+                        correctMap: [true, false, false, true, true],
+                        explanation: "Đáp án đúng/sai theo yêu cầu: DSSDD (Đúng - Sai - Sai - Đúng - Đúng)."
+                    },
+                    {
+                        section: "tf",
+                        question: "Câu 22. Trong đời sống và thực phẩm, tinh bột dễ được nấu chín và tiêu hóa hơn cellulose. Mỗi phát biểu bên dưới đây là đúng hay sai?",
+                        options: [
+                            "a) Tinh bột tạo màu xanh tím khi phản ứng với dung dịch iodine. [SAI]",
+                            "b) Cellulose tan tốt trong nước nóng. [SAI]",
+                            "c) Tinh bột không tan trong nước lạnh. [ĐÚNG]",
+                            "d) Cellulose không phản ứng màu với dung dịch iodine. [ĐÚNG]"
+                        ],
+                        correctMap: [false, false, true, true],
+                        explanation: "Đáp án đúng/sai theo yêu cầu: SSDD (Sai - Sai - Đúng - Đúng)."
+                    }
+                ]
+            }
+        };
+
+        // ==========================================
+        // 3. STATE MANAGEMENT & GAME ENGINE
+        // ==========================================
+        let currentQuizQuestions = [];
+        let currentIndex = 0;
+        let score = 0;
+        let correctCount = 0;
+        let incorrectCount = 0;
+        let streak = 0;
+        let sessionCoinsEarned = 0;
+        let timerSeconds = 0;
+        let timerInterval = null;
+        let isPaused = false;
+        let currentUserName = "";
+        let isWaitingForNext = false;
+        let userAnswersHistory = [];
+        let purchasedPowerUps = { expert: false, amulet: false, friend: false, chitan: false, hint: false };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('quizCoins_phongnhan') === null) {
+                localStorage.setItem('quizCoins_phongnhan', '300'); // Newcomer starting bonus 300 coins
+            }
+            updateTotalUsersDisplay();
+            updateWalletDisplay();
+        });
+
+        function getStoredCoins() {
+            return parseInt(localStorage.getItem('quizCoins_phongnhan') || '300', 10);
+        }
+
+        function setStoredCoins(val) {
+            localStorage.setItem('quizCoins_phongnhan', Math.max(0, val).toString());
+            updateWalletDisplay();
+        }
+
+        function updateWalletDisplay() {
+            const coins = getStoredCoins();
+            const coinEl = document.getElementById('userTotalCoins');
+            const shopCoinEl = document.getElementById('shopCoinsDisplay');
+            if (coinEl) coinEl.innerText = coins;
+            if (shopCoinEl) shopCoinEl.innerText = coins;
+            const walletBadge = document.getElementById('coinWalletBadge');
+            if (walletBadge && (coins > 0 || currentUserName)) {
+                walletBadge.classList.remove('hidden');
+            }
+        }
+
+        // Power-up store purchase logic
+        function buyPowerUp(type) {
+            const cost = 100;
+            let currentCoins = getStoredCoins();
+            if (purchasedPowerUps[type]) {
+                alert("Bạn đã mua vật phẩm này rồi! Mỗi loại chỉ được mua tối đa 1 cái cho mỗi lần làm bài.");
+                return;
+            }
+            if (currentCoins < cost) {
+                alert("Số dư xu của bạn không đủ để mua vật phẩm này (Cần 100 🪙)!");
+                return;
+            }
+
+            setStoredCoins(currentCoins - cost);
+            purchasedPowerUps[type] = true;
+            
+            const btn = document.getElementById(`buyBtn_${type}`);
+            if (btn) {
+                btn.innerText = "Đã Sở Hữu ✓";
+                btn.disabled = true;
+                btn.className = "px-3 py-1.5 bg-emerald-600 text-white font-bold text-xs rounded-xl cursor-not-allowed opacity-95";
+            }
+            playSound('coin');
+            alert("Mua bảo bối thành công! Vật phẩm đã sẵn sàng để sử dụng trong lúc làm bài.");
+        }
+
+        function updateTotalUsersDisplay() {
+            let lb = JSON.parse(localStorage.getItem('quizLeaderboard_phongnhan')) || [];
+            const userCountEl = document.getElementById('totalUsersCount');
+            if (userCountEl) {
+                userCountEl.innerText = Math.max(128, lb.length * 3 + 14);
+            }
+        }
+
+        // Use Power-up in-game
+        function usePowerUp(type) {
+            if (!purchasedPowerUps[type]) {
+                alert("Bạn chưa mua bảo bối này ở sảnh chờ trước khi làm bài!");
+                return;
+            }
+            const q = currentQuizQuestions[currentIndex];
+            if (!q) return;
+
+            if (type === 'expert') {
+                if (q.section === 'mcq') {
+                    alert(`💡 Ý kiến Chuyên gia Hóa: Đối với câu hỏi này, đáp án chính xác là phương án ${String.fromCharCode(65 + q.correct)}. (${q.explanation || ''})`);
+                } else {
+                    alert(`💡 Ý kiến Chuyên gia Hóa: Các ý Đúng/Sai của câu này đã được phân tích. (${q.explanation || ''})`);
+                }
+            } else if (type === 'amulet') {
+                if (q.section !== 'mcq') {
+                    alert("Bảo bối thần kỳ chỉ áp dụng loại bỏ đáp án cho phần trắc nghiệm 4 đáp án!");
+                    return;
+                }
+                let wrongIndices = [];
+                q.options.forEach((_, idx) => {
+                    if (idx !== q.correct) wrongIndices.push(idx);
+                });
+                wrongIndices.sort(() => Math.random() - 0.5);
+                let toRemove = wrongIndices.slice(0, 2);
+                alert(`✨ Bảo bối thần kỳ đã loại bỏ 2 đáp án sai! Các đáp án không phải là: ${toRemove.map(i => String.fromCharCode(65 + i)).join(', ')}.`);
+            } else if (type === 'friend') {
+                let friendMsg = q.section === 'mcq' 
+                    ? `📞 Người thân thầm thì: "Mình tin chắc chắn đáp án đúng là ${String.fromCharCode(65 + q.correct)} nhé!"`
+                    : `📞 Người thân thầm thì: "Hãy cẩn thận phán đoán từng ý Đúng/Sai của câu này nhé!"`;
+                alert(friendMsg);
+            } else if (type === 'chitan') {
+                let chiTanMsg = q.section === 'mcq'
+                    ? `🎓 Trợ Giúp Từ Chí Tân: "Chí Tân chỉ điểm chọn ngay phương án ${String.fromCharCode(65 + q.correct)} nhé Ní ơi!"`
+                    : `🎓 Trợ Giúp Từ Chí Tân: "Chí Tân đã xem kỹ, đối chiếu kiến thức SGK Hóa 12 là chọn đúng các ý ngay!"`;
+                alert(chiTanMsg);
+            } else if (type === 'hint') {
+                alert(`💡 Gợi ý chi tiết: ${q.explanation || 'Không có gợi ý phụ cho câu này.'}`);
+            }
+        }
+
+        // Start Quiz Handler
+        function startQuiz(e) {
+            e.preventDefault();
+            const nameInput = document.getElementById('userNameInput').value.trim();
+            if (!nameInput) {
+                alert("Vui lòng nhập tên của bạn trước khi bắt đầu!");
+                return;
+            }
+            currentUserName = nameInput;
+
+            const lessonKey = document.getElementById('lessonSelect').value;
+            const sectionKey = document.getElementById('sectionSelect').value;
+            const isShuffled = document.getElementById('shuffleCheckbox').checked;
+
+            let pool = [];
+            if (lessonKey === 'all') {
+                Object.keys(rawDatabase).forEach(k => {
+                    rawDatabase[k].questions.forEach(q => {
+                        pool.push({ ...q, lessonKey: k, lessonTitle: rawDatabase[k].title, lessonShort: rawDatabase[k].shortName });
+                    });
+                });
+            } else {
+                if (rawDatabase[lessonKey]) {
+                    rawDatabase[lessonKey].questions.forEach(q => {
+                        pool.push({ ...q, lessonKey: lessonKey, lessonTitle: rawDatabase[lessonKey].title, lessonShort: rawDatabase[lessonKey].shortName });
+                    });
+                }
+            }
+
+            if (sectionKey !== 'all') {
+                pool = pool.filter(q => q.section === sectionKey);
+            }
+
+            if (pool.length === 0) {
+                alert("Không có câu hỏi nào phù hợp với tùy chọn này!");
+                return;
+            }
+
+            currentQuizQuestions = JSON.parse(JSON.stringify(pool));
+
+            if (isShuffled) {
+                currentQuizQuestions.sort(() => Math.random() - 0.5);
+                currentQuizQuestions.forEach(q => {
+                    if (q.section === 'mcq') {
+                        let combined = q.options.map((opt, idx) => ({ opt, isCorrect: idx === q.correct }));
+                        combined.sort(() => Math.random() - 0.5);
+                        q.options = combined.map(c => c.opt);
+                        q.correct = combined.findIndex(c => c.isCorrect);
+                    }
+                });
+            }
+
+            currentIndex = 0;
+            score = 0;
+            correctCount = 0;
+            incorrectCount = 0;
+            streak = 0;
+            sessionCoinsEarned = 0;
+            timerSeconds = 0;
+            isPaused = false;
+            userAnswersHistory = new Array(currentQuizQuestions.length).fill(null);
+
+            document.getElementById('setupScreen').classList.add('hidden');
+            document.getElementById('resultScreen').classList.add('hidden');
+            document.getElementById('quizScreen').classList.remove('hidden');
+            document.getElementById('coinWalletBadge').classList.remove('hidden');
+            updateWalletDisplay();
+
+            ['expert', 'amulet', 'friend', 'chitan', 'hint'].forEach(t => {
+                const btn = document.getElementById(`inGameBtn_${t}`);
+                if (btn) {
+                    if (purchasedPowerUps[t]) {
+                        btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    } else {
+                        btn.classList.add('opacity-50', 'cursor-not-allowed');
+                    }
+                }
+            });
+
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (!isPaused) {
+                    timerSeconds++;
+                    let m = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
+                    let s = (timerSeconds % 60).toString().padStart(2, '0');
+                    const timerEl = document.getElementById('timerDisplay');
+                    if (timerEl) timerEl.innerText = `${m}:${s}`;
+                }
+            }, 1000);
+
+            buildQuestionGridDrawer();
+            loadQuestion();
+        }
+
+        // Build Grouped Question Drawer
+        function buildQuestionGridDrawer() {
+            const container = document.getElementById('questionGroupsDrawer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            let groups = {};
+            currentQuizQuestions.forEach((q, idx) => {
+                let lKey = q.lessonKey || 'bai1';
+                let lTitle = q.lessonTitle || 'Bài học';
+                let lShort = q.lessonShort || 'Bài';
+                if (!groups[lKey]) {
+                    groups[lKey] = { title: lTitle, short: lShort, items: [] };
+                }
+                groups[lKey].items.push({ originalIndex: idx, qObj: q });
+            });
+
+            Object.keys(groups).forEach(lKey => {
+                const grp = groups[lKey];
+                const sectionDiv = document.createElement('div');
+                sectionDiv.className = "space-y-1.5";
+                
+                const titleEl = document.createElement('h5');
+                titleEl.className = "text-xs font-extrabold text-indigo-600 dark:text-indigo-400 uppercase tracking-wide truncate";
+                titleEl.innerText = grp.title;
+                sectionDiv.appendChild(titleEl);
+
+                const gridEl = document.createElement('div');
+                gridEl.className = "grid grid-cols-5 gap-1.5";
+
+                grp.items.forEach((item, lessonItemIdx) => {
+                    const idx = item.originalIndex;
+                    const btn = document.createElement('button');
+                    btn.type = "button";
+                    btn.id = `gridBtn_${idx}`;
+                    btn.className = "w-9 h-9 rounded-xl font-bold text-xs bg-slate-100 dark:bg-slate-800 hover:bg-indigo-500 hover:text-white text-slate-700 dark:text-slate-300 transition flex items-center justify-center transform hover:scale-105 cursor-pointer";
+                    btn.innerText = lessonItemIdx + 1;
+                    btn.title = `${grp.short} - Câu ${lessonItemIdx + 1}`;
+                    btn.onclick = () => jumpToQuestion(idx);
+                    gridEl.appendChild(btn);
+                });
+
+                sectionDiv.appendChild(gridEl);
+                container.appendChild(sectionDiv);
+            });
+
+            updateGridDrawerStates();
+        }
+
+        function updateGridDrawerStates() {
+            currentQuizQuestions.forEach((_, idx) => {
+                const btn = document.getElementById(`gridBtn_${idx}`);
+                if (!btn) return;
+                if (idx === currentIndex) {
+                    btn.className = "w-9 h-9 rounded-xl font-bold text-xs ring-2 ring-indigo-600 bg-indigo-600 text-white flex items-center justify-center shadow-md animate-pulse cursor-pointer";
+                } else if (userAnswersHistory[idx] !== null && userAnswersHistory[idx] !== undefined) {
+                    btn.className = "w-9 h-9 rounded-xl font-bold text-xs bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 flex items-center justify-center cursor-pointer";
+                } else {
+                    btn.className = "w-9 h-9 rounded-xl font-bold text-xs bg-slate-100 dark:bg-slate-800 hover:bg-indigo-500 hover:text-white text-slate-700 dark:text-slate-300 flex items-center justify-center cursor-pointer";
+                }
+            });
+        }
+
+        function jumpToQuestion(idx) {
+            currentIndex = idx;
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            isWaitingForNext = false;
+            document.getElementById('feedbackBox').classList.add('hidden');
+            document.getElementById('nextBtn').classList.add('hidden');
+
+            const q = currentQuizQuestions[currentIndex];
+            document.getElementById('currentQuestionNum').innerText = currentIndex + 1;
+            document.getElementById('totalQuestionsNum').innerText = currentQuizQuestions.length;
+            document.getElementById('questionLessonTagDisplay').innerText = q.lessonShort || 'Bài';
+            document.getElementById('questionText').innerText = q.question;
+            
+            const progress = ((currentIndex + 1) / currentQuizQuestions.length) * 100;
+            document.getElementById('quizProgressBar').style.width = `${progress}%`;
+
+            const sectionTag = document.getElementById('questionSectionTag');
+            if (q.section === 'mcq') {
+                sectionTag.innerText = "Phần I: Trắc Nghiệm (4 Đáp Án)";
+                sectionTag.className = "px-3 py-1 rounded-full bg-violet-500/10 text-violet-600 dark:text-violet-400 text-xs font-bold uppercase tracking-wider";
+            } else {
+                sectionTag.innerText = "Phần II: Câu Hỏi Trắc Nghiệm Đúng/Sai";
+                sectionTag.className = "px-3 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-bold uppercase tracking-wider";
+            }
+
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+
+            const previousChoice = userAnswersHistory[currentIndex];
+
+            if (q.section === 'mcq') {
+                q.options.forEach((optText, idx) => {
+                    const btn = document.createElement('button');
+                    btn.type = "button";
+                    let btnClass = "w-full text-left p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 hover:bg-indigo-50 dark:hover:bg-slate-800 hover:border-indigo-300 dark:hover:border-indigo-500/50 font-medium text-slate-800 dark:text-slate-200 transition flex items-center space-x-3 group cursor-pointer";
+                    
+                    if (previousChoice !== null && previousChoice !== undefined) {
+                        if (idx === q.correct) {
+                            btnClass = "w-full text-left p-4 rounded-2xl border border-emerald-500 bg-emerald-500/10 text-emerald-800 dark:text-emerald-200 font-medium flex items-center space-x-3";
+                        } else if (idx === previousChoice && previousChoice !== q.correct) {
+                            btnClass = "w-full text-left p-4 rounded-2xl border border-rose-500 bg-rose-500/10 text-rose-800 dark:text-rose-200 font-medium flex items-center space-x-3";
+                        }
+                    }
+
+                    btn.className = btnClass;
+                    btn.innerHTML = `
+                        <span class="w-8 h-8 rounded-xl bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 flex items-center justify-center font-bold text-indigo-600 dark:text-indigo-400 group-hover:bg-indigo-600 group-hover:text-white transition shrink-0">${String.fromCharCode(65 + idx)}</span>
+                        <span class="flex-grow">${optText}</span>
+                    `;
+                    if (previousChoice === null || previousChoice === undefined) {
+                        btn.onclick = () => handleMCQAnswer(idx);
+                    } else {
+                        btn.disabled = true;
+                    }
+                    container.appendChild(btn);
+                });
+
+                if (previousChoice !== null && previousChoice !== undefined) {
+                    showFeedbackState(previousChoice === q.correct, q);
+                }
+            } else {
+                if (!window.userTfSelections) window.userTfSelections = {};
+                if (previousChoice) {
+                    window.userTfSelections[currentIndex] = [...previousChoice];
+                } else if (!window.userTfSelections[currentIndex]) {
+                    window.userTfSelections[currentIndex] = new Array(q.correctMap.length).fill(null);
+                }
+
+                q.options.forEach((stmtText, idx) => {
+                    const card = document.createElement('div');
+                    card.className = "p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3";
+                    
+                    const currentVal = window.userTfSelections[currentIndex][idx];
+                    let tClass = "px-4 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500 text-emerald-600 hover:text-white font-bold text-xs border border-emerald-500/20 transition cursor-pointer";
+                    let fClass = "px-4 py-2 rounded-xl bg-rose-500/10 hover:bg-rose-500 text-rose-600 hover:text-white font-bold text-xs border border-rose-500/20 transition cursor-pointer";
+
+                    if (currentVal === true) tClass = "px-4 py-2 rounded-xl bg-emerald-600 text-white font-bold text-xs shadow transition cursor-pointer";
+                    if (currentVal === false) fClass = "px-4 py-2 rounded-xl bg-rose-600 text-white font-bold text-xs shadow transition cursor-pointer";
+
+                    card.innerHTML = `
+                        <div class="flex-grow font-medium text-slate-800 dark:text-slate-200 text-sm">
+                            ${stmtText}
+                        </div>
+                        <div class="flex items-center space-x-2 shrink-0">
+                            <button type="button" onclick="handleTFAnswer(${idx}, true)" id="btnT_${idx}" class="${tClass}">ĐÚNG</button>
+                            <button type="button" onclick="handleTFAnswer(${idx}, false)" id="btnF_${idx}" class="${fClass}">SAI</button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+
+                if (previousChoice === null || previousChoice === undefined) {
+                    const submitDiv = document.createElement('div');
+                    submitDiv.className = "pt-2";
+                    submitDiv.innerHTML = `
+                        <button type="button" onclick="submitTFAnswers()" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow transition cursor-pointer">
+                            Xác Nhận Đáp Án Đúng / Sai
+                        </button>
+                    `;
+                    container.appendChild(submitDiv);
+                } else {
+                    showTFFeedbackState(previousChoice, q);
+                }
+            }
+            updateGridDrawerStates();
+        }
+
+        // Handle MCQ Answer selection
+        function handleMCQAnswer(selectedIndex) {
+            if (isWaitingForNext) return;
+            const q = currentQuizQuestions[currentIndex];
+            const isCorrect = (selectedIndex === q.correct);
+            userAnswersHistory[currentIndex] = selectedIndex;
+
+            const buttons = document.getElementById('optionsContainer').getElementsByTagName('button');
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].disabled = true;
+                if (i === q.correct) {
+                    buttons[i].className = "w-full text-left p-4 rounded-2xl border border-emerald-500 bg-emerald-500/10 text-emerald-800 dark:text-emerald-200 font-medium flex items-center space-x-3";
+                } else if (i === selectedIndex && !isCorrect) {
+                    buttons[i].className = "w-full text-left p-4 rounded-2xl border border-rose-500 bg-rose-500/10 text-rose-800 dark:text-rose-200 font-medium flex items-center space-x-3";
+                }
+            }
+
+            if (isCorrect) {
+                correctCount++;
+                score += 10;
+                streak++;
+                let streakBonus = Math.min(10, streak * 2);
+                let earned = 5 + streakBonus;
+                sessionCoinsEarned += earned;
+                setStoredCoins(getStoredCoins() + earned);
+                playSound('correct');
+                playSound('coin');
+            } else {
+                incorrectCount++;
+                streak = 0;
+                playSound('incorrect');
+            }
+            updateStreakDisplay();
+            updateGridDrawerStates();
+
+            showFeedbackState(isCorrect, q);
+
+            if (isCorrect) {
+                isWaitingForNext = true;
+                setTimeout(() => {
+                    if (currentIndex < currentQuizQuestions.length - 1) {
+                        currentIndex++;
+                        loadQuestion();
+                    } else {
+                        finishQuiz();
+                    }
+                }, 1500);
+            } else {
+                isWaitingForNext = true;
+                document.getElementById('nextBtn').classList.remove('hidden');
+            }
+        }
+
+        function showFeedbackState(isCorrect, q) {
+            const fbBox = document.getElementById('feedbackBox');
+            fbBox.classList.remove('hidden');
+            const fbIcon = document.getElementById('feedbackIcon');
+            const fbTitle = document.getElementById('feedbackTitle');
+            const fbMsg = document.getElementById('feedbackMessage');
+
+            if (isCorrect) {
+                fbBox.className = "mt-6 p-4 rounded-2xl flex items-start space-x-3 bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 dark:text-emerald-200";
+                fbIcon.innerHTML = "🎉";
+                const encouragements = [
+                    `Tuyệt vời quá ${currentUserName} ơi! Bạn đúng là thiên tài Hóa học!`,
+                    `Xuất sắc đỉnh chóp! ${currentUserName} trả lời quá mượt mà!`,
+                    `Quá đỉnh ${currentUserName}! Cứ đà này điểm 10 nằm trong tầm tay!`,
+                    `Chính xác hoàn toàn! Chúc mừng ${currentUserName} nha!`
+                ];
+                fbTitle.innerText = encouragements[Math.floor(Math.random() * encouragements.length)];
+                fbMsg.innerText = q.explanation || "Bạn đã trả lời xuất sắc câu hỏi này.";
+            } else {
+                fbBox.className = "mt-6 p-4 rounded-2xl flex items-start space-x-3 bg-rose-500/10 border border-rose-500/30 text-rose-800 dark:text-rose-200";
+                fbIcon.innerHTML = "💪";
+                const encouragements = [
+                    `Không sao đâu ${currentUserName}, vấp keo này ta bày keo khác, cố lên câu tiếp theo nhé!`,
+                    `Tiếc quá đi mất! Rút kinh nghiệm câu này để phục thù câu sau nha ${currentUserName}!`,
+                    `Đừng nản lòng ${currentUserName} ơi! Thất bại là mẹ thành công mà!`
+                ];
+                fbTitle.innerText = encouragements[Math.floor(Math.random() * encouragements.length)];
+                fbMsg.innerText = `Đáp án đúng là: ${String.fromCharCode(65 + q.correct)}. ${q.explanation || ''}`;
+            }
+        }
+
+        // Handle True/False individual button click
+        function handleTFAnswer(stmtIdx, choice) {
+            if (!window.userTfSelections[currentIndex]) {
+                window.userTfSelections[currentIndex] = new Array(currentQuizQuestions[currentIndex].correctMap.length).fill(null);
+            }
+            window.userTfSelections[currentIndex][stmtIdx] = choice;
+
+            const btnT = document.getElementById(`btnT_${stmtIdx}`);
+            const btnF = document.getElementById(`btnF_${stmtIdx}`);
+            if (choice) {
+                if (btnT) btnT.className = "px-4 py-2 rounded-xl bg-emerald-600 text-white font-bold text-xs shadow transition cursor-pointer";
+                if (btnF) btnF.className = "px-4 py-2 rounded-xl bg-rose-500/10 hover:bg-rose-500 text-rose-600 hover:text-white font-bold text-xs border border-rose-500/20 transition cursor-pointer";
+            } else {
+                if (btnF) btnF.className = "px-4 py-2 rounded-xl bg-rose-600 text-white font-bold text-xs shadow transition cursor-pointer";
+                if (btnT) btnT.className = "px-4 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500 text-emerald-600 hover:text-white font-bold text-xs border border-emerald-500/20 transition cursor-pointer";
+            }
+        }
+
+        function submitTFAnswers() {
+            const q = currentQuizQuestions[currentIndex];
+            const selections = window.userTfSelections[currentIndex];
+            if (!selections || selections.includes(null)) {
+                alert("Vui lòng đưa ra đánh giá Đúng/Sai cho tất cả các ý trước khi xác nhận!");
+                return;
+            }
+
+            userAnswersHistory[currentIndex] = [...selections];
+            let allCorrect = true;
+            for (let i = 0; i < q.correctMap.length; i++) {
+                if (selections[i] !== q.correctMap[i]) {
+                    allCorrect = false;
+                    break;
+                }
+            }
+
+            if (allCorrect) {
+                correctCount++;
+                score += 15;
+                streak++;
+                let streakBonus = Math.min(12, streak * 2);
+                let earned = 8 + streakBonus;
+                sessionCoinsEarned += earned;
+                setStoredCoins(getStoredCoins() + earned);
+                playSound('correct');
+                playSound('coin');
+            } else {
+                incorrectCount++;
+                streak = 0;
+                playSound('incorrect');
+            }
+            updateStreakDisplay();
+            updateGridDrawerStates();
+
+            showTFFeedbackState(selections, q);
+
+            if (allCorrect) {
+                isWaitingForNext = true;
+                setTimeout(() => {
+                    if (currentIndex < currentQuizQuestions.length - 1) {
+                        currentIndex++;
+                        loadQuestion();
+                    } else {
+                        finishQuiz();
+                    }
+                }, 1600);
+            } else {
+                isWaitingForNext = true;
+                document.getElementById('nextBtn').classList.remove('hidden');
+            }
+        }
+
+        function showTFFeedbackState(selections, q) {
+            let allCorrect = true;
+            for (let i = 0; i < q.correctMap.length; i++) {
+                if (selections[i] !== q.correctMap[i]) allCorrect = false;
+            }
+
+            const fbBox = document.getElementById('feedbackBox');
+            fbBox.classList.remove('hidden');
+            const fbIcon = document.getElementById('feedbackIcon');
+            const fbTitle = document.getElementById('feedbackTitle');
+            const fbMsg = document.getElementById('feedbackMessage');
+
+            if (allCorrect) {
+                fbBox.className = "mt-6 p-4 rounded-2xl flex items-start space-x-3 bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 dark:text-emerald-200";
+                fbIcon.innerHTML = "🌟";
+                fbTitle.innerText = `Quá đỉnh cao ${currentUserName}! Phân tích chuẩn xác 100% mọi ý Đúng/Sai!`;
+                fbMsg.innerText = q.explanation || "Bạn đã phán đoán hoàn hảo tất cả các phát biểu.";
+            } else {
+                fbBox.className = "mt-6 p-4 rounded-2xl flex items-start space-x-3 bg-rose-500/10 border border-rose-500/30 text-rose-800 dark:text-rose-200";
+                fbIcon.innerHTML = "💪";
+                fbTitle.innerText = `Cố lên ${currentUserName} ơi, dạng Đúng/Sai hơi lắt léo một chút, rút kinh nghiệm nha!`;
+                fbMsg.innerText = `Đáp án chuẩn các ý: ${q.correctMap.map((val, idx) => `(${String.fromCharCode(97+idx)}: ${val ? 'ĐÚNG' : 'SAI'})`).join(', ')}. ${q.explanation || ''}`;
+            }
+        }
+
+        function updateStreakDisplay() {
+            const badge = document.getElementById('streakBadge');
+            const count = document.getElementById('streakCount');
+            if (streak > 1) {
+                badge.classList.remove('hidden');
+                count.innerText = streak;
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        function prevQuestion() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                loadQuestion();
+            }
+        }
+
+        function nextQuestionManual() {
+            if (currentIndex < currentQuizQuestions.length - 1) {
+                currentIndex++;
+                loadQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function nextQuestion() {
+            if (currentIndex < currentQuizQuestions.length - 1) {
+                currentIndex++;
+                loadQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function confirmQuickSubmit() {
+            if (confirm("Bạn có muốn nộp nhanh bài thi ngay lúc này không?")) {
+                finishQuiz();
+            }
+        }
+
+        function togglePauseQuiz() {
+            isPaused = !isPaused;
+            const overlay = document.getElementById('pauseOverlay');
+            const icon = document.getElementById('pauseIcon');
+            const text = document.getElementById('pauseText');
+            if (isPaused) {
+                overlay.classList.remove('hidden');
+                overlay.classList.add('flex');
+                if (icon) icon.className = "fa-solid fa-play text-emerald-500";
+                if (text) text.innerText = "Tiếp Tục";
+            } else {
+                overlay.classList.add('hidden');
+                overlay.classList.remove('flex');
+                if (icon) icon.className = "fa-solid fa-pause text-indigo-500";
+                if (text) text.innerText = "Tạm Dừng";
+            }
+        }
+
+        function finishQuiz() {
+            if (timerInterval) clearInterval(timerInterval);
+
+            document.getElementById('quizScreen').classList.add('hidden');
+            document.getElementById('resultScreen').classList.remove('hidden');
+
+            document.getElementById('resultUserName').innerText = `Học viên: ${currentUserName}`;
+            document.getElementById('resScore').innerText = `${score}đ`;
+            document.getElementById('resCorrect').innerText = correctCount;
+            document.getElementById('resIncorrect').innerText = incorrectCount;
+            document.getElementById('resCoins').innerText = `+${sessionCoinsEarned} 🪙`;
+
+            let m = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
+            let s = (timerSeconds % 60).toString().padStart(2, '0');
+            const timeStr = `${m}:${s}`;
+
+            saveToLeaderboard({
+                name: currentUserName,
+                score: score,
+                correct: correctCount,
+                timeSeconds: timerSeconds,
+                timeStr: timeStr,
+                coins: sessionCoinsEarned,
+                date: new Date().toLocaleDateString('vi-VN')
+            });
+            updateTotalUsersDisplay();
+            updateWalletDisplay();
+        }
+
+        function openReviewModal() {
+            const modal = document.getElementById('reviewModal');
+            const content = document.getElementById('reviewContentList');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            content.innerHTML = '';
+
+            currentQuizQuestions.forEach((q, idx) => {
+                const userChoice = userAnswersHistory[idx];
+                const itemDiv = document.createElement('div');
+                itemDiv.className = "p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 space-y-2";
+                
+                let answerDetail = "";
+                let isCorrectReview = false;
+
+                if (q.section === 'mcq') {
+                    const isAnsCorrect = (userChoice === q.correct);
+                    isCorrectReview = isAnsCorrect;
+                    answerDetail = `
+                        <p class="text-xs font-semibold ${isAnsCorrect ? 'text-emerald-600' : 'text-rose-600'}">
+                            Bạn chọn: ${userChoice !== null && userChoice !== undefined ? String.fromCharCode(65 + userChoice) : 'Chưa trả lời'} ${isAnsCorrect ? '✓' : '✗'}
+                        </p>
+                        <p class="text-xs font-semibold text-emerald-600">Đáp án đúng: ${String.fromCharCode(65 + q.correct)}</p>
+                    `;
+                } else {
+                    let matches = true;
+                    if (userChoice && Array.isArray(userChoice)) {
+                        for (let i = 0; i < q.correctMap.length; i++) {
+                            if (userChoice[i] !== q.correctMap[i]) matches = false;
+                        }
+                    } else {
+                        matches = false;
+                    }
+                    isCorrectReview = matches;
+                    answerDetail = `
+                        <p class="text-xs font-semibold ${matches ? 'text-emerald-600' : 'text-rose-600'}">
+                            Kết quả: ${matches ? 'Đúng tất cả các ý ✓' : 'Chưa chính xác ✗'}
+                        </p>
+                        <p class="text-xs text-slate-500">Đáp án chuẩn: ${q.correctMap.map((v, i) => `(${String.fromCharCode(97+i)}: ${v?'ĐÚNG':'SAI'})`).join(', ')}</p>
+                    `;
+                }
+
+                itemDiv.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold px-2.5 py-1 rounded-lg ${isCorrectReview ? 'bg-emerald-500/10 text-emerald-600' : 'bg-rose-500/10 text-rose-600'}">Câu ${idx + 1} (${q.lessonShort || 'Bài'})</span>
+                        <span class="text-xs text-slate-400 font-medium">${q.section === 'mcq' ? 'Trắc nghiệm' : 'Đúng/Sai'}</span>
+                    </div>
+                    <p class="text-sm font-bold text-slate-900 dark:text-white">${q.question}</p>
+                    ${answerDetail}
+                    <p class="text-xs text-slate-500 dark:text-slate-400 italic">💡 Giải thích: ${q.explanation || 'Không có'}</p>
+                `;
+                content.appendChild(itemDiv);
+            });
+        }
+
+        function closeReviewModal() {
+            document.getElementById('reviewModal').classList.add('hidden');
+            document.getElementById('reviewModal').classList.remove('flex');
+        }
+
+        function saveToLeaderboard(record) {
+            let lb = JSON.parse(localStorage.getItem('quizLeaderboard_phongnhan')) || [];
+            lb.push(record);
+            lb.sort((a, b) => {
+                if (b.score !== a.score) return b.score - a.score;
+                return a.timeSeconds - b.timeSeconds;
+            });
+            if (lb.length > 25) lb = lb.slice(0, 25);
+            localStorage.setItem('quizLeaderboard_phongnhan', JSON.stringify(lb));
+        }
+
+        function openLeaderboard() {
+            const modal = document.getElementById('leaderboardModal');
+            const content = document.getElementById('leaderboardContent');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            let lb = JSON.parse(localStorage.getItem('quizLeaderboard_phongnhan')) || [];
+            if (lb.length === 0) {
+                content.innerHTML = `
+                    <div class="text-center py-10 text-slate-400">
+                        <i class="fa-solid fa-medal text-4xl mb-3 text-slate-300 dark:text-slate-700"></i>
+                        <p class="font-medium">Chưa có kết quả nào trên bảng xếp hạng.</p>
+                        <p class="text-xs mt-1">Hãy hoàn thành bài thi để ghi danh vào bảng vàng!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            content.innerHTML = '';
+            lb.forEach((item, index) => {
+                let rankBadge = '';
+                if (index === 0) rankBadge = 'bg-amber-500 text-white shadow-md shadow-amber-500/30';
+                else if (index === 1) rankBadge = 'bg-slate-300 text-slate-800';
+                else if (index === 2) rankBadge = 'bg-amber-700/60 text-white';
+                else rankBadge = 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400';
+
+                const row = document.createElement('div');
+                row.className = "flex items-center justify-between p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/60 dark:border-slate-700/50";
+                row.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-xl font-bold flex items-center justify-center text-sm ${rankBadge}">
+                            ${index + 1}
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-900 dark:text-white text-sm">${item.name}</h4>
+                            <p class="text-xs text-slate-400">${item.date} • ${item.timeStr}</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="font-black text-indigo-600 dark:text-indigo-400 text-sm">${item.score}đ</span>
+                        <p class="text-xs text-amber-500 font-semibold">+${item.coins || 0} 🪙</p>
+                    </div>
+                `;
+                content.appendChild(row);
+            });
+        }
+
+        function closeLeaderboard() {
+            document.getElementById('leaderboardModal').classList.add('hidden');
+            document.getElementById('leaderboardModal').classList.remove('flex');
+        }
+
+        function clearLeaderboardData() {
+            if (confirm("Bạn có chắc chắn muốn xóa toàn bộ lịch sử bảng xếp hạng không?")) {
+                localStorage.removeItem('quizLeaderboard_phongnhan');
+                openLeaderboard();
+                updateTotalUsersDisplay();
+            }
+        }
+
+        function confirmExitQuiz() {
+            if (confirm("Bạn có chắc chắn muốn thoát khỏi bài thi hiện tại không? Tiến trình sẽ không được lưu.")) {
+                if (timerInterval) clearInterval(timerInterval);
+                returnToHome();
+            }
+        }
+
+        function returnToHome() {
+            if (timerInterval) clearInterval(timerInterval);
+            document.getElementById('quizScreen').classList.add('hidden');
+            document.getElementById('resultScreen').classList.add('hidden');
+            document.getElementById('setupScreen').classList.remove('hidden');
+            document.getElementById('coinWalletBadge').classList.add('hidden');
+            purchasedPowerUps = { expert: false, amulet: false, friend: false, chitan: false, hint: false };
+            updateTotalUsersDisplay();
+            updateWalletDisplay();
+        }
+
+        function restartQuiz() {
+            startQuiz({ preventDefault: () => {} });
+        }
+    </script>
+</body>
+</html>
